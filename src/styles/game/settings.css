@@ -1,0 +1,13 @@
+#settings-form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+#settings-form input {
+    width: 60px;
+}

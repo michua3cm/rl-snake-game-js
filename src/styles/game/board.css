@@ -1,0 +1,20 @@
+#board {
+    margin: 0px auto;
+    outline: 2px solid #888888;
+}
+
+.cell {
+    background-color: #222222;
+}
+
+.cell.snake {
+    background-color: lime;
+}
+
+.cell.head {
+    background-color: limegreen;
+}
+
+.cell.food {
+    background-color: red;
+}
