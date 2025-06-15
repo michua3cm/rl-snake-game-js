@@ -1,5 +1,7 @@
 # Snake Game: Reinforcement Learning Agent
 
+🔗 [Live demo](https://michua3cm.github.io/rl-snake-game-js/)
+
 ## Description
 
 A reinforcement learning project where an agent learns to play Snake using Q-learning. This project explores environment design, reward shaping, and emergent behavior, with a focus on understanding how simple objectives can lead to structured optimal strategies.
