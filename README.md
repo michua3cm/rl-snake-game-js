@@ -50,6 +50,35 @@ snake-game-rl/
 └── LICENSE
 ```
 
+## How To Use
+
+This project uses [Node.js](https://nodejs.org/en) and Vite to serve and build the application.
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/michua3cm/rl-snake-game-js.git
+cd rl-snake-game-js
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Start the local development server
+
+```bash
+npm run dev
+```
+
+### 4. Open your browser at
+
+```bash
+http://localhost:8888
+```
+
 ## Technical Reflection
 
 The initial goal was playful — to train a snake agent capable of filling the entire screen, maximizing length through self-play. However, after several iterations, I realized that the optimal policy under sparse rewards tends to converge not to a "greedy snake," but to a deterministic space-filling traversal.
