@@ -51,8 +51,23 @@ document.addEventListener('DOMContentLoaded', () => {
     startButton.addEventListener('click', () => {
         if (toggle.checked && currentGame?.start) {
             currentGame.start();
+            startButton.blur();
         }
     });
 
+    startButton.addEventListener('keydown', (event) => {
+        if ([' ', 'Enter'].includes(event.key))
+            event.stopPropagation();
+    });
+
     startGame(toggle.checked); // Start based on initial toggle state
+});
+
+window.addEventListener('keydown', (event) => {
+    const tag = document.activeElement.tagName;
+    const isInteractiveElement =
+        tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'BUTTON';
+
+    if (([' ', 'Enter'].includes(event.key)) && !isInteractiveElement)
+        event.preventDefault();
 });
