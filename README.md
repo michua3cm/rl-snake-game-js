@@ -21,7 +21,7 @@ So this project became more than just a reinforcement learning experiment. It be
 ## Project Structure
 
 ```text
-snake-game-rl/
+rl-snake-game-js/
 ├── docs/
 ├── src/
 │   ├── components/

@@ -15,10 +15,15 @@ export default class Overlay {
         document.addEventListener('keydown', this._keydownControl);
     }
 
+    /**
+     * Handles keydown events to start the game when the overlay is visible.
+     * 
+     * @param {KeyboardEvent} event - The keydown event triggered by the user. 
+     */
     _keydownControl = (event) => {
         const ignoreKeys = ['Tab', 'Escape', 'Alt', 'Control', 'Shift', 'Meta'];
 
-        // Avoit triggering if the user is typing in an input field
+        // Avoid triggering if the user is typing in an input field
         const isTyping = document.activeElement.tagName === 'INPUT';
 
         if (this.overlay.style.display !== 'none' &&
@@ -78,6 +83,9 @@ export default class Overlay {
         this.overlayTitle.textContent = text;
     }
 
+    /**
+     * Removes the event listener and hides the overlay.
+     */
     removeEvent() {
         document.removeEventListener('keydown', this._keydownControl);
         this.overlay.style.display = 'none';

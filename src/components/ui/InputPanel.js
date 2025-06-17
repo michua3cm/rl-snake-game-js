@@ -62,6 +62,9 @@ export default class InputPanel {
         }
     }
 
+    /**
+     * Removes all event listeners and resets the input fields.
+     */
     removeEvent() {
         for (const input of Object.values(this.inputs))
             input.replaceWith(input.cloneNode(true));

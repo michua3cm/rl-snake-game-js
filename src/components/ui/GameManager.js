@@ -225,6 +225,9 @@ export default class GameManager {
         document.addEventListener('keydown', resetHandler);
     }
 
+    /**
+     * Removes all event listeners and stops the game loop.
+     */
     removeEvent() {
         if (this.intervalId) {
             clearInterval(this.intervalId);
