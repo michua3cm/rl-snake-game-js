@@ -3,6 +3,12 @@ import initManual from './components/GameManual.js';
 import initAI from './components/GameAI.js';
 import initTrainingControl from './components/ui/GameControlPanel.js';
 
+document.body.style.visibility = 'hidden';
+
+window.addEventListener('load', () => {
+    document.body.style.visibility = 'visible';
+});
+
 let currentGame = null;
 
 function switchGameMode(isAI) {
