@@ -87,6 +87,10 @@ button {
     /* slightly darker orange */
 }
 
+#start-training:active {
+    transform: scale(0.96);
+}
+
 #start-training.hidden {
     display: none;
 }
@@ -105,6 +109,10 @@ button {
 #stop-training.enabled:hover {
     background-color: #c0392b;
     /* slightly darker red */
+}
+
+#stop-training:active:not([disabled]) {
+    transform: scale(0.96);
 }
 
 #stop-training.disabled {
