@@ -11,6 +11,7 @@ export default function init() {
     const episodes = 5000;
     let episode = 0;
     let cancelled = false;
+    let paused = false;
 
     function switchSpeed(event) {
         const key = event.keyCode;
@@ -28,6 +29,18 @@ export default function init() {
         let state = env.getState();
 
         while (!env.game.isDone() && !cancelled) {
+            if (paused) {
+                await new Promise((resolve) => {
+                    const wait = () => {
+                        if (!paused) {
+                            document.removeEventListener('resume-training', wait);
+                            resolve();
+                        }
+                    };
+                    document.addEventListener('resume-training', wait);
+                })
+            }
+
             const action = agent.chooseAction(state);
             const { nextState, reward } = env.step(action);
             agent.updateQ(state, action, reward, nextState);
@@ -57,7 +70,24 @@ export default function init() {
         start: () => {
             episode = 0;
             cancelled = false;
+            paused = false;
             QLearning();
+        },
+        pause: () => {
+            paused = true;
+        },
+        resume: () => {
+            if (paused) {
+                paused = false;
+                // Wake up the paused loop
+                document.dispatchEvent(new Event('resume-training'));
+            }
+        },
+        stop: () => {
+            cancelled = true;
+            paused = false;
+            env.updateEpisode(episode);
+            console.log('Training stopped.');
         },
         destroy: () => {
             cancelled = true;

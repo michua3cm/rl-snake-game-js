@@ -1,4 +1,4 @@
-export default function init(onModeChange, onStartGame) {
+export default function init(onModeChange) {
     const toggle = document.getElementById('mode-toggle');
     const startButton = document.getElementById('start-training');
     const stopButton = document.getElementById('stop-training');
@@ -6,25 +6,36 @@ export default function init(onModeChange, onStartGame) {
     const startIcon = startButton.querySelector('.material-icons');
 
     let isRunning = false;
+    let hasStarted = false;
 
     const buttons = [startButton, stopButton];
     const controlledElements = [startButton, stopButton, hint];
+
+    // Signal listeners
+    const startListeners = [];
+    const pauseListeners = [];
+    const resumeListeners = [];
+    const stopListeners = [];
+
+    function emit(listeners) {
+        for (const fn of listeners) fn();
+    }
 
     function toggleVisibility(elements, show) {
         for (const element of elements)
             element.classList.toggle('hidden', !show);
     }
 
-    function updateStartButton(button, running, icon) {
-        button.classList.toggle('start', !running);
-        button.classList.toggle('pause', running);
-        icon.textContent = running ? 'pause' : 'play_arrow';
+    function updateStartButton(running) {
+        startButton.classList.toggle('start', !running);
+        startButton.classList.toggle('pause', running);
+        startIcon.textContent = running ? 'pause' : 'play_arrow';
     }
 
-    function updateStopButton(button, running) {
-        button.disabled = !running;
-        button.classList.toggle('enabled', running);
-        button.classList.toggle('disabled', !running);
+    function updateStopButton(running) {
+        stopButton.disabled = !running;
+        stopButton.classList.toggle('enabled', running);
+        stopButton.classList.toggle('disabled', !running);
     }
 
     toggleVisibility(controlledElements, toggle.checked);
@@ -32,31 +43,33 @@ export default function init(onModeChange, onStartGame) {
 
     toggle.addEventListener('change', () => {
         isRunning = false;
-        updateStartButton(startButton, isRunning, startIcon);
-        updateStopButton(stopButton, isRunning);
+        hasStarted = false;
+        updateStartButton(isRunning);
+        updateStopButton(isRunning);
         toggleVisibility(controlledElements, toggle.checked);
         onModeChange(toggle.checked);
     });
 
     startButton.addEventListener('click', () => {
         isRunning = !isRunning;
-        if (isRunning) {
-            updateStartButton(startButton, isRunning, startIcon);
-            updateStopButton(stopButton, isRunning);
-        } else {
-            updateStartButton(startButton, isRunning, startIcon);
-        }
+        updateStartButton(isRunning);
+        updateStopButton(true);
 
-        if (toggle.checked && onStartGame?.()) {
-            onStartGame();
-            startButton.blur();
+        if (toggle.checked) {
+            if (!hasStarted) {  // stopButton.classList.contains('enabled')
+                hasStarted = true;
+                emit(startListeners);
+            } else if (isRunning) emit(resumeListeners);
+            else emit(pauseListeners);
         }
     });
 
     stopButton.addEventListener('click', () => {
         isRunning = false;
-        updateStartButton(startButton, isRunning, startIcon);
-        updateStopButton(stopButton, isRunning);
+        hasStarted = false;
+        updateStartButton(isRunning);
+        updateStopButton(isRunning);
+        emit(stopListeners);
     });
 
     for (const button of buttons) {
@@ -73,4 +86,12 @@ export default function init(onModeChange, onStartGame) {
         if (([' ', 'Enter'].includes(event.key) && !isInteractive))
             event.preventDefault();
     });
+
+    // Return registration API
+    return {
+        onStart: fn => startListeners.push(fn),
+        onPause: fn => pauseListeners.push(fn),
+        onResume: fn => resumeListeners.push(fn),
+        onStop: fn => stopListeners.push(fn),
+    };
 }
