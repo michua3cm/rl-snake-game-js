@@ -48,11 +48,12 @@ input:checked+.slider::before {
     transform: translateX(22px);
 }
 
-#start-training {
+
+/* Start training button */
+button {
     all: unset;
     font-size: 1rem;
     font-family: inherit;
-    background-color: #2ecc71;
     color: white;
     margin-left: 1rem;
     padding: 3px 12px;
@@ -61,16 +62,57 @@ input:checked+.slider::before {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 6px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
 }
 
-#start-training:hover {
+/* Start Button States */
+#start-training.start {
+    background-color: #2ecc71;
+    /* Green */
+}
+
+#start-training.start:hover {
     background-color: #27ae60;
     /* slightly darker green */
 }
 
+#start-training.pause {
+    background-color: #f39c12;
+}
+
+#start-training.pause:hover {
+    background-color: #e67e22;
+    /* slightly darker orange */
+}
+
 #start-training.hidden {
+    display: none;
+}
+
+/* Stop Button States */
+#stop-training {
+    background-color: #bdc3c7;
+}
+
+#stop-training.enabled {
+    background-color: #e74c3c;
+    /* Red */
+    cursor: pointer;
+}
+
+#stop-training.enabled:hover {
+    background-color: #c0392b;
+    /* slightly darker red */
+}
+
+#stop-training.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#stop-training.hidden {
     display: none;
 }
 
@@ -84,4 +126,12 @@ input:checked+.slider::before {
 
 #start-hint.hidden {
     display: none;
+}
+
+/* Icon Styles */
+.material-icons {
+    font-size: 1.2rem;
+    vertical-align: middle;
+    /* color: inherit; */
+    /* Inherit color from button */
 }

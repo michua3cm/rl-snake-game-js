@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/png+xml" href="/icon.png" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Snake Game RL</title>
 </head>
@@ -34,7 +35,13 @@
           <span class="slider"></span>
         </label>
         <span>AI</span>
-        <button id="start-training">Start</button>
+
+        <button id="stop-training" class="disabled" disabled>
+          <span class="material-icons">stop</span>
+        </button>
+        <button id="start-training" class="start">
+          <span class="material-icons">play_arrow</span>
+        </button>
         <span id="start-hint" class="hint">← Click to begin training</span>
       </div>
     </div>
