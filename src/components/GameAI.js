@@ -3,7 +3,7 @@ import QLearningAgent from "./agents/q_learning/agent.js";
 
 export default function init() {
     const FAST = 0;
-    const SLOW = 10;
+    const SLOW = 1;
     let speed = SLOW;
 
     const env = new GameManager();
