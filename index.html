@@ -4,10 +4,11 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/png+xml" href="/rl-snake-game-js/icon.png" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Snake Game RL</title>
-  <script type="module" crossorigin src="/rl-snake-game-js/assets/index-DlNMh5zW.js"></script>
-  <link rel="stylesheet" crossorigin href="/rl-snake-game-js/assets/index-_0Hca69c.css">
+  <script type="module" crossorigin src="/rl-snake-game-js/assets/index-BdZwOYEN.js"></script>
+  <link rel="stylesheet" crossorigin href="/rl-snake-game-js/assets/index-CFGZGTPP.css">
 </head>
 
 <body>
@@ -36,7 +37,13 @@
           <span class="slider"></span>
         </label>
         <span>AI</span>
-        <button id="start-training">Start</button>
+
+        <button id="stop-training" class="disabled" disabled>
+          <span class="material-icons">stop</span>
+        </button>
+        <button id="start-training" class="start">
+          <span class="material-icons">play_arrow</span>
+        </button>
         <span id="start-hint" class="hint">← Click to begin training</span>
       </div>
     </div>
@@ -53,7 +60,7 @@
       </label>
     </div>
   </div>
-
+
 </body>
 
 </html>
