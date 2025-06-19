@@ -7,8 +7,8 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Snake Game RL</title>
-  <script type="module" crossorigin src="/rl-snake-game-js/assets/index-BdZwOYEN.js"></script>
-  <link rel="stylesheet" crossorigin href="/rl-snake-game-js/assets/index-CFGZGTPP.css">
+  <script type="module" crossorigin src="/rl-snake-game-js/assets/index-Cw12GNYT.js"></script>
+  <link rel="stylesheet" crossorigin href="/rl-snake-game-js/assets/index-DckCxMI9.css">
 </head>
 
 <body>
@@ -33,7 +33,7 @@
       <div id="mode-toggle-wrapper">
         <span>Manual</span>
         <label class="switch">
-          <input type="checkbox" id="mode-toggle">
+          <input type="checkbox" id="mode-toggle" checked="true">
           <span class="slider"></span>
         </label>
         <span>AI</span>
@@ -45,6 +45,9 @@
           <span class="material-icons">play_arrow</span>
         </button>
         <span id="start-hint" class="hint">← Click to begin training</span>
+        <button id="speed" class="disabled slow" disabled>
+          <span class="material-icons">keyboard_double_arrow_right</span>
+        </button>
       </div>
     </div>
 
