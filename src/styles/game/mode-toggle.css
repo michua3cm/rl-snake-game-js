@@ -124,6 +124,7 @@ button {
     display: none;
 }
 
+/* Hint for start button */
 #start-hint {
     margin-left: 8px;
     font-size: 0.85rem;
@@ -133,6 +134,40 @@ button {
 }
 
 #start-hint.hidden {
+    display: none;
+}
+
+/* Speed up button state */
+
+#speed.enabled.slow {
+    background-color: #40E0D0;
+    cursor: pointer;
+}
+
+#speed.enabled.slow:hover {
+    background-color: #20C0B0;
+}
+
+#speed.enabled.fast {
+    background-color: #B57EDC;
+    cursor: pointer;
+}
+
+#speed.enabled.fast:hover {
+    background-color: #955EBC;
+}
+
+#speed:active:not([disabled]) {
+    transform: scale(0.96);
+}
+
+#speed.disabled {
+    background-color: #bdc3c7;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#speed.hidden {
     display: none;
 }
 

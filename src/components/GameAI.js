@@ -3,7 +3,7 @@ import QLearningAgent from "./agents/q_learning/agent.js";
 
 export default function init(config) {
     const FAST = 0;
-    const SLOW = 1;
+    const SLOW = 20;
     let speed = SLOW;
 
     const env = new GameManager(config);
@@ -94,6 +94,12 @@ export default function init(config) {
             paused = false;
             env.updateEpisode(episode);
             console.log('Training stopped.');
+        },
+        speedUp: () => {
+            speed = FAST;
+        },
+        slowDown: () => {
+            speed = SLOW;
         },
         destroy: () => {
             cancelled = true;

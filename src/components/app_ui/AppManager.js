@@ -38,4 +38,6 @@ export default function init() {
     ui.onPause(() => currentGame?.pause?.());
     ui.onResume(() => currentGame?.resume?.()); // optional if you separate resume from pause
     ui.onStop(() => currentGame?.stop?.());
+    ui.onSpeedUp(() => currentGame?.speedUp?.());
+    ui.onSlowDown(() => currentGame?.slowDown?.());
 }
