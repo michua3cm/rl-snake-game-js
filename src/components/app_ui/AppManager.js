@@ -28,7 +28,7 @@ export default function init() {
     function recreateGame(isAI) {
         isAI_Mode = isAI;
         currentGame?.destroy?.();
-        currentGame = isAI ? initAI() : initManual();
+        currentGame = isAI ? initAI(config) : initManual(config);
     }
 
     const ui = initTrainingControl(recreateGame);
