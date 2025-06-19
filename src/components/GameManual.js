@@ -1,7 +1,7 @@
-import GameManager from './ui/GameManager.js';
+import GameManager from './game_ui/GameManager.js';
 
-export default function init() {
-    const game = new GameManager({ manual: true });
+export default function init(config) {
+    const game = new GameManager({ ...config, manual: true });
     game.attachKeydownListener();
 
     return {

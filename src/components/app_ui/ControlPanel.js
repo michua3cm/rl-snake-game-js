@@ -62,6 +62,7 @@ export default function init(onModeChange) {
             } else if (isRunning) emit(resumeListeners);
             else emit(pauseListeners);
         }
+        startButton.blur();
     });
 
     stopButton.addEventListener('click', () => {
@@ -70,12 +71,15 @@ export default function init(onModeChange) {
         updateStartButton(isRunning);
         updateStopButton(isRunning);
         emit(stopListeners);
+        stopButton.blur();
     });
 
     for (const button of buttons) {
         button.addEventListener('keydown', (event) => {
-            if ([' ', 'Enter'].includes(event.key))
+            if ([' ', 'Enter'].includes(event.key)) {
                 event.stopPropagation();
+                button.blur();
+            }
         });
     }
 

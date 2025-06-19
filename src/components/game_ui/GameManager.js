@@ -1,8 +1,7 @@
-import Game from '../snake_env/Game.js';
+import Game from '../game_env/Game.js';
 import Board from './Board.js';
 import HUD from './HUD.js';
 import Overlay from './Overlay.js';
-import InputPanel from './InputPanel.js';
 
 /**
  * Manages the overall game flow, UI rendering, and user/agent interaction.
@@ -30,12 +29,6 @@ export default class GameManager {
 
         this.hud = new HUD();
         this.overlay = this.manual ? new Overlay(this.start.bind(this)) : null;
-        this.inputPanel = new InputPanel({
-            width: this.width,
-            height: this.height,
-            cellSize: this.cellSize,
-            onSizeChange: this._handleSizeChange.bind(this)
-        });
 
         this.intervalId = null;
         this.action = 1; // Default action is to move forward
@@ -139,30 +132,6 @@ export default class GameManager {
         this.hud.updateHighestScore(this.highestScore);
         this.game.reset();    // keep existing game object
         this._init();
-    }
-
-    /**
-     * Rebuilds the game with new dimensions or cell size.
-     */
-    _rebuildGame() {
-        this.board = new Board(this.width, this.height, this.cellSize);
-        this.game = new Game(this.width, this.height);
-        this._init();
-    }
-
-    /**
-     * Handles change of game dimensions or cell size.
-     * 
-     * @param {'width'|'height'|'cellSize'} type 
-     * @param {number} value 
-     * @private
-     */
-    _handleSizeChange(type, value) {
-        if (type === 'width') this.width = value;
-        else if (type === 'height') this.height = value;
-        else if (type === 'cellSize') this.cellSize = value;
-
-        this._rebuildGame();
     }
 
     // ========== Input Handling ========== //

@@ -1,12 +1,12 @@
-import GameManager from './ui/GameManager.js';
+import GameManager from './game_ui/GameManager.js';
 import QLearningAgent from "./agents/q_learning/agent.js";
 
-export default function init() {
+export default function init(config) {
     const FAST = 0;
     const SLOW = 1;
     let speed = SLOW;
 
-    const env = new GameManager();
+    const env = new GameManager(config);
     const agent = new QLearningAgent();
     const episodes = 5000;
     let episode = 0;
@@ -27,6 +27,7 @@ export default function init() {
         }
 
         let state = env.getState();
+        let stepCounter = 0;
 
         while (!env.game.isDone() && !cancelled) {
             if (paused) {
@@ -46,14 +47,18 @@ export default function init() {
             agent.updateQ(state, action, reward, nextState);
             state = nextState;
 
-            if (speed === SLOW || episode % 100 === 0)
+            if (speed === SLOW)
                 await new Promise((resolve) => setTimeout(resolve, speed));
-            else
-                await Promise.resolve();
+            else {
+                if (++stepCounter % 200 === 0)
+                    await new Promise((resolve) => setTimeout(resolve, speed));
+                else
+                    await Promise.resolve();
+            }
         }
 
         if (!cancelled) {
-            console.log(`Episode ${episode + 1}: Epsilon: ${agent.epsilon.toFixed(4)}, Score: ${env.game.getScore()}`);
+            // console.log(`Episode ${episode + 1}: Epsilon: ${agent.epsilon.toFixed(4)}, Score: ${env.game.getScore()}`);
 
             agent.decayEpsilon();
             env.restartRound();
@@ -84,6 +89,7 @@ export default function init() {
             }
         },
         stop: () => {
+            speed = SLOW;
             cancelled = true;
             paused = false;
             env.updateEpisode(episode);
