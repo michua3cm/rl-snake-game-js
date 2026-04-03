@@ -106,7 +106,13 @@ export default class Game {
         const ate = this.snake.move(direction, this.food.getPosition());
         if (ate) {
             this.score++;
-            this.food = new Food(this.width, this.height, this.snake.getSegments());
+            const nextFood = new Food(this.width, this.height, this.snake.getSegments());
+            if (nextFood.getPosition() === null) {
+                // Board is completely full — snake has won
+                this.done = true;
+                return { nextState: this.getState(), reward: 10, done: true };
+            }
+            this.food = nextFood;
         }
 
         // Get snake head information after moving

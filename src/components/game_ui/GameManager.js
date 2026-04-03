@@ -32,6 +32,7 @@ export default class GameManager {
 
         this.intervalId = null;
         this.action = 1; // Default action is to move forward
+        this._resetHandler = null;
 
         this._handleKeydown = this._handleKeydown.bind(this);
         this.setControlMode(this.manual);
@@ -179,19 +180,20 @@ export default class GameManager {
     _handleGameOver() {
         this.overlay?.showGameOver(this.game.getScore());
 
-        const resetHandler = (e) => {
+        this._resetHandler = (e) => {
             const blockedKeys = ['Tab', 'Alt', 'Meta', 'Control', 'Shift'];
             if (blockedKeys.includes(e.key)) return;
 
             e.stopPropagation();
             e.preventDefault();
 
-            document.removeEventListener('keydown', resetHandler);
+            document.removeEventListener('keydown', this._resetHandler);
+            this._resetHandler = null;
             this.restartRound();
         };
 
         // Add temporary key listener to restart game
-        document.addEventListener('keydown', resetHandler);
+        document.addEventListener('keydown', this._resetHandler);
     }
 
     /**
@@ -201,6 +203,11 @@ export default class GameManager {
         if (this.intervalId) {
             clearInterval(this.intervalId);
             this.intervalId = null;
+        }
+
+        if (this._resetHandler) {
+            document.removeEventListener('keydown', this._resetHandler);
+            this._resetHandler = null;
         }
 
         // Remove event listeners from components
