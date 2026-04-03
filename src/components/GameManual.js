@@ -1,7 +1,7 @@
 import GameManager from './game_ui/GameManager.js';
 
-export default function init(config) {
-    const game = new GameManager({ ...config, manual: true });
+export default function init(config, { onPlay, onIdle } = {}) {
+    const game = new GameManager({ ...config, manual: true, onPlay, onIdle });
     game.attachKeydownListener();
 
     return {

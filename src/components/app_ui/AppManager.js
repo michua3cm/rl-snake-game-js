@@ -12,7 +12,7 @@ export default function init() {
     let currentGame = null;
     let isAI_Mode = false;
 
-    new InputPanel({
+    const inputPanel = new InputPanel({
         ...config,
         onSizeChange: changeSize
     });
@@ -28,16 +28,31 @@ export default function init() {
     function recreateGame(isAI) {
         isAI_Mode = isAI;
         currentGame?.destroy?.();
-        currentGame = isAI ? initAI(config) : initManual(config);
+        inputPanel.enable();
+
+        if (isAI) {
+            currentGame = initAI(config);
+        } else {
+            currentGame = initManual(config, {
+                onPlay: () => inputPanel.disable(),
+                onIdle: () => inputPanel.enable()
+            });
+        }
     }
 
     const ui = initTrainingControl(recreateGame);
 
     // Bind signal listeners
-    ui.onStart(() => currentGame?.start?.());
+    ui.onStart(() => {
+        inputPanel.disable();
+        currentGame?.start?.();
+    });
     ui.onPause(() => currentGame?.pause?.());
-    ui.onResume(() => currentGame?.resume?.()); // optional if you separate resume from pause
-    ui.onStop(() => currentGame?.stop?.());
+    ui.onResume(() => currentGame?.resume?.());
+    ui.onStop(() => {
+        inputPanel.enable();
+        currentGame?.stop?.();
+    });
     ui.onSpeedUp(() => currentGame?.speedUp?.());
     ui.onSlowDown(() => currentGame?.slowDown?.());
 }
