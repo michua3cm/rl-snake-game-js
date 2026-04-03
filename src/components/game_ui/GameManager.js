@@ -17,12 +17,15 @@ export default class GameManager {
      * @param {number} [options.cellSize=20] - Size of each cell in pixels.
      * @param {boolean} [options.manual=false] - Whether the game is controlled manually.
      */
-    constructor({ width = 40, height = 20, cellSize = 20, manual = false } = {}) {
+    constructor({ width = 40, height = 20, cellSize = 20, manual = false, onPlay = null, onIdle = null } = {}) {
         this.width = width;
         this.height = height;
         this.cellSize = cellSize;
         this.manual = manual;
         this.highestScore = 0;
+
+        this._onPlay = onPlay;
+        this._onIdle = onIdle;
 
         this.board = new Board(this.width, this.height, this.cellSize);
         this.game = new Game(this.width, this.height);
@@ -67,6 +70,7 @@ export default class GameManager {
         if (this.intervalId) clearInterval(this.intervalId);
 
         this.overlay?.hide();
+        this._onPlay?.();
 
         this.intervalId = setInterval(() => {
             this.game.step(this.action);
@@ -179,6 +183,7 @@ export default class GameManager {
      */
     _handleGameOver() {
         this.overlay?.showGameOver(this.game.getScore());
+        this._onIdle?.();
 
         this._resetHandler = (e) => {
             const blockedKeys = ['Tab', 'Alt', 'Meta', 'Control', 'Shift'];

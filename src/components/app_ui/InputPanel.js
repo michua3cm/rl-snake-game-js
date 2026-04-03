@@ -12,7 +12,7 @@
 export default class InputPanel {
     /**
      * Creates an InputPanel instance to manage user input for game size configuration.
-     * 
+     *
      * @param {Object} config
      * @param {number} config.width - Initial game board width.
      * @param {number} config.height - Initial game board height.
@@ -37,6 +37,9 @@ export default class InputPanel {
         this.inputs.height.value = height;
         this.inputs.cellSize.value = cellSize;
 
+        // Track last known valid value per input to restore on invalid entry
+        this._lastValid = { width, height, cellSize };
+
         this._initListeners();
     }
 
@@ -46,10 +49,16 @@ export default class InputPanel {
      */
     _initListeners() {
         for (const [type, input] of Object.entries(this.inputs)) {
-            input.addEventListener('input', (e) => {
+            // Fire only when the user commits the value (blur / Enter)
+            input.addEventListener('change', (e) => {
                 const value = parseInt(e.target.value, 10);
-                if (!isNaN(value) && value >= this.minValue && value <= this.maxValue)
+                if (!isNaN(value) && value >= this.minValue && value <= this.maxValue) {
+                    this._lastValid[type] = value;
                     this.onSizeChange(type, value);
+                } else {
+                    // Restore last valid value instead of leaving an invalid state
+                    e.target.value = this._lastValid[type];
+                }
             });
 
             // Prevent global key handling when user finishes or cancels input:
@@ -60,6 +69,22 @@ export default class InputPanel {
                 }
             });
         }
+    }
+
+    /**
+     * Disables all size inputs (e.g. while the game is running).
+     */
+    disable() {
+        for (const input of Object.values(this.inputs))
+            input.disabled = true;
+    }
+
+    /**
+     * Re-enables all size inputs (e.g. when game is stopped or over).
+     */
+    enable() {
+        for (const input of Object.values(this.inputs))
+            input.disabled = false;
     }
 
     /**

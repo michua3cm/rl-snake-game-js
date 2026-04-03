@@ -11,3 +11,8 @@
 #settings-form input {
     width: 60px;
 }
+
+#settings-form input:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
