@@ -21,49 +21,49 @@ export default function init(config) {
     }
 
     async function QLearning() {
-        if (episode >= episodes || cancelled) {
-            console.log("Training complete!");
-            return;
-        }
+        while (episode < episodes && !cancelled) {
+            let state = env.getState();
+            let stepCounter = 0;
 
-        let state = env.getState();
-        let stepCounter = 0;
+            while (!env.game.isDone() && !cancelled) {
+                if (paused) {
+                    await new Promise((resolve) => {
+                        const wait = () => {
+                            if (!paused) {
+                                document.removeEventListener('resume-training', wait);
+                                resolve();
+                            }
+                        };
+                        document.addEventListener('resume-training', wait);
+                    });
+                }
 
-        while (!env.game.isDone() && !cancelled) {
-            if (paused) {
-                await new Promise((resolve) => {
-                    const wait = () => {
-                        if (!paused) {
-                            document.removeEventListener('resume-training', wait);
-                            resolve();
-                        }
-                    };
-                    document.addEventListener('resume-training', wait);
-                })
+                const action = agent.chooseAction(state);
+                const { nextState, reward } = env.step(action);
+                agent.updateQ(state, action, reward, nextState);
+                state = nextState;
+
+                if (speed === SLOW)
+                    await new Promise((resolve) => setTimeout(resolve, speed));
+                else {
+                    if (++stepCounter % 200 === 0)
+                        await new Promise((resolve) => setTimeout(resolve, speed));
+                    else
+                        await Promise.resolve();
+                }
             }
 
-            const action = agent.chooseAction(state);
-            const { nextState, reward } = env.step(action);
-            agent.updateQ(state, action, reward, nextState);
-            state = nextState;
+            if (!cancelled) {
+                // console.log(`Episode ${episode + 1}: Epsilon: ${agent.epsilon.toFixed(4)}, Score: ${env.game.getScore()}`);
 
-            if (speed === SLOW)
-                await new Promise((resolve) => setTimeout(resolve, speed));
-            else {
-                if (++stepCounter % 200 === 0)
-                    await new Promise((resolve) => setTimeout(resolve, speed));
-                else
-                    await Promise.resolve();
+                agent.decayEpsilon();
+                env.restartRound();
+                env.updateEpisode(++episode);
             }
         }
 
         if (!cancelled) {
-            // console.log(`Episode ${episode + 1}: Epsilon: ${agent.epsilon.toFixed(4)}, Score: ${env.game.getScore()}`);
-
-            agent.decayEpsilon();
-            env.restartRound();
-            env.updateEpisode(++episode);
-            QLearning();
+            console.log("Training complete!");
         }
     }
 
