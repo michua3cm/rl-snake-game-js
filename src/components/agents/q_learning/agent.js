@@ -30,7 +30,7 @@ export default class QLearningAgent {
         } else {
             const actionsValues = MOVES.map((action) => this.getQ(state, action));
             const maxQ = Math.max(...actionsValues);
-            const bestActions = MOVES.filter((action) => actionsValues[action] === maxQ);
+            const bestActions = MOVES.filter((_, i) => actionsValues[i] === maxQ);
             // If there are multiple best actions, randomly choose between best actions
             return bestActions[Math.floor(Math.random() * bestActions.length)];
         }
