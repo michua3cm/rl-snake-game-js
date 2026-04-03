@@ -10,10 +10,11 @@
     "deploy": "vite build && gh-pages -d dist"
   },
   "dependencies": {
-    "vue": "^3.5.13"
+    "@vitejs/plugin-react": "^4.7.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.2.3",
     "vite": "^6.3.5",
     "vite-plugin-gh-pages": "^1.0.1"
   }
