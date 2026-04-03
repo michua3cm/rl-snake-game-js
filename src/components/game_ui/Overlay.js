@@ -5,13 +5,13 @@ export default class Overlay {
     /**
      * @param {Function} onStartCallback - Function to call when the user presses any key to start the game.
      */
-    constructor(onSartCallback) {
+    constructor(onStartCallback) {
         this.overlay = document.getElementById('overlay');
         this.overlayTitle = document.getElementById('overlay-title');
         this.overlayScore = document.getElementById('overlay-score');
         this.overlayInstruction = document.getElementById('overlay-instruction');
 
-        this._onStart = onSartCallback;
+        this._onStart = onStartCallback;
         document.addEventListener('keydown', this._keydownControl);
     }
 

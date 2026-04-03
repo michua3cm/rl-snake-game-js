@@ -28,13 +28,14 @@ export default class Food {
      * @returns {Position} Valid food position
      */
     _generatePosition(snake) {
-        while (true) {
-            const x = Math.floor(Math.random() * this.width);
-            const y = Math.floor(Math.random() * this.height);
-            if (!snake.some(part => part.x === x && part.y === y)) {
-                return { x, y };
-            }
-        }
+        const occupied = new Set(snake.map(p => `${p.x},${p.y}`));
+        const empty = [];
+        for (let y = 0; y < this.height; y++)
+            for (let x = 0; x < this.width; x++)
+                if (!occupied.has(`${x},${y}`)) empty.push({ x, y });
+
+        if (empty.length === 0) return null; // board is completely full
+        return empty[Math.floor(Math.random() * empty.length)];
     }
 
     /**
