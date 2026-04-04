@@ -23,7 +23,7 @@ export default function Settings({ config, disabled, onChange }) {
 
     return (
         <div id="settings-form" className="card bg-base-200 shadow-lg">
-            <div className="card-body flex flex-row gap-6 p-4">
+            <div className="card-body flex flex-row flex-wrap gap-6 p-4">
                 <label className="flex flex-col gap-1">
                     <span className="text-xs uppercase tracking-wider text-base-content/50">Width</span>
                     <input

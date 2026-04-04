@@ -1,14 +1,17 @@
 import { useState, useCallback } from 'react'
 import useGame from './hooks/useGame.js'
+import useTheme from './hooks/useTheme.js'
 import Board from './components/Board.jsx'
 import HUD from './components/HUD.jsx'
 import Overlay from './components/Overlay.jsx'
 import Controls from './components/Controls.jsx'
 import Settings from './components/Settings.jsx'
+import ThemeToggle from './components/ThemeToggle.jsx'
 
 export default function App() {
     const [mode, setMode] = useState('ai')   // 'manual' | 'ai'
     const [config, setConfig] = useState({ width: 40, height: 20, cellSize: 20 })
+    const [themePref, setThemePref] = useTheme()
 
     const {
         renderState,
@@ -32,10 +35,8 @@ export default function App() {
 
     const handleModeChange = useCallback((newMode) => {
         if (newMode === 'manual') {
-            // Switching to human play: stop any running AI and reset to start screen
             stopAI()
         } else {
-            // Switching to AI: stop any running manual game
             stopManual()
         }
         setMode(newMode)
@@ -50,28 +51,35 @@ export default function App() {
     }, [isAI, dismissOverlay])
 
     return (
-        <div id="game-wrapper" className="min-h-screen bg-base-300 flex flex-col items-center justify-center py-8 px-4 gap-6">
-            <div id="game-layout" className="flex flex-row items-start gap-4">
-                <div id="game-container" className="flex flex-col gap-2">
+        <div id="game-wrapper" className="min-h-screen bg-base-300 flex flex-col items-center justify-center py-6 px-4 gap-5">
+            {/* Theme toggle — top-right */}
+            <div className="w-full flex justify-end">
+                <ThemeToggle pref={themePref} onChange={setThemePref} />
+            </div>
+
+            <div id="game-layout" className="flex flex-col md:flex-row items-start gap-4 w-full max-w-max mx-auto">
+                <div id="game-container" className="flex flex-col gap-2 w-full md:w-auto">
                     <HUD
                         score={score}
                         highScore={highScore}
                         episode={episode}
                         showEpisode={isAI}
                     />
-                    <div id="board-container" className="relative">
-                        <Board
-                            width={config.width}
-                            height={config.height}
-                            cellSize={config.cellSize}
-                            snake={snake}
-                            food={food}
-                        />
-                        <Overlay
-                            state={isAI ? 'hidden' : overlayState}
-                            score={score}
-                            onDismiss={handleDismissOverlay}
-                        />
+                    <div id="board-wrapper" className="overflow-x-auto w-full">
+                        <div id="board-container" className="relative inline-block">
+                            <Board
+                                width={config.width}
+                                height={config.height}
+                                cellSize={config.cellSize}
+                                snake={snake}
+                                food={food}
+                            />
+                            <Overlay
+                                state={isAI ? 'hidden' : overlayState}
+                                score={score}
+                                onDismiss={handleDismissOverlay}
+                            />
+                        </div>
                     </div>
                 </div>
 
