@@ -22,43 +22,48 @@ export default function Settings({ config, disabled, onChange }) {
     }
 
     return (
-        <div id="settings-form">
-            <label>
-                Width:
-                <input
-                    type="number"
-                    id="input-width"
-                    defaultValue={config.width}
-                    min={5} max={100}
-                    disabled={disabled}
-                    onChange={e => handleChange('width', 5, 100, e)}
-                    onKeyDown={handleKeyDown}
-                />
-            </label>
-            <label>
-                Height:
-                <input
-                    type="number"
-                    id="input-height"
-                    defaultValue={config.height}
-                    min={5} max={100}
-                    disabled={disabled}
-                    onChange={e => handleChange('height', 5, 100, e)}
-                    onKeyDown={handleKeyDown}
-                />
-            </label>
-            <label>
-                Cell Size:
-                <input
-                    type="number"
-                    id="input-cell"
-                    defaultValue={config.cellSize}
-                    min={5} max={50}
-                    disabled={disabled}
-                    onChange={e => handleChange('cellSize', 5, 50, e)}
-                    onKeyDown={handleKeyDown}
-                />
-            </label>
+        <div id="settings-form" className="card bg-base-200 shadow-lg">
+            <div className="card-body flex flex-row gap-6 p-4">
+                <label className="flex flex-col gap-1">
+                    <span className="text-xs uppercase tracking-wider text-base-content/50">Width</span>
+                    <input
+                        type="number"
+                        id="input-width"
+                        defaultValue={config.width}
+                        min={5} max={100}
+                        disabled={disabled}
+                        className="input input-bordered input-sm w-20 text-center"
+                        onChange={e => handleChange('width', 5, 100, e)}
+                        onKeyDown={handleKeyDown}
+                    />
+                </label>
+                <label className="flex flex-col gap-1">
+                    <span className="text-xs uppercase tracking-wider text-base-content/50">Height</span>
+                    <input
+                        type="number"
+                        id="input-height"
+                        defaultValue={config.height}
+                        min={5} max={100}
+                        disabled={disabled}
+                        className="input input-bordered input-sm w-20 text-center"
+                        onChange={e => handleChange('height', 5, 100, e)}
+                        onKeyDown={handleKeyDown}
+                    />
+                </label>
+                <label className="flex flex-col gap-1">
+                    <span className="text-xs uppercase tracking-wider text-base-content/50">Cell Size</span>
+                    <input
+                        type="number"
+                        id="input-cell"
+                        defaultValue={config.cellSize}
+                        min={5} max={50}
+                        disabled={disabled}
+                        className="input input-bordered input-sm w-20 text-center"
+                        onChange={e => handleChange('cellSize', 5, 50, e)}
+                        onKeyDown={handleKeyDown}
+                    />
+                </label>
+            </div>
         </div>
     )
 }

@@ -37,22 +37,21 @@ export default function App() {
         setConfig(prev => ({ ...prev, [field]: value }))
     }, [])
 
-    // Overlay dismiss: manual mode starts game; gameover shows start screen
     const handleDismissOverlay = useCallback(() => {
         if (!isAI) dismissOverlay()
     }, [isAI, dismissOverlay])
 
     return (
-        <div id="game-wrapper">
-            <div id="game-layout">
-                <div id="game-container">
+        <div id="game-wrapper" className="min-h-screen bg-base-300 flex flex-col items-center justify-center py-8 px-4 gap-6">
+            <div id="game-layout" className="flex flex-row items-start gap-4">
+                <div id="game-container" className="flex flex-col gap-2">
                     <HUD
                         score={score}
                         highScore={highScore}
                         episode={episode}
                         showEpisode={isAI}
                     />
-                    <div id="board-container">
+                    <div id="board-container" className="relative">
                         <Board
                             width={config.width}
                             height={config.height}
