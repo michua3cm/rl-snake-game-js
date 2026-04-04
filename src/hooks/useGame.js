@@ -4,6 +4,7 @@ import QLearningAgent from '../components/agents/q_learning/agent.js'
 
 const EPISODES = 5000
 const SLOW_DELAY = 20
+const FAST_BATCH = 50   // steps between macrotask yields in fast mode
 
 // Directions: 0=LEFT, 1=UP, 2=RIGHT, 3=DOWN
 const KEY_DIR_MAP = {
@@ -138,6 +139,18 @@ export default function useGame(config) {
         manualIntervalRef.current = startManual()
     }, [width, height, syncState, startManual])
 
+    // Stop a running manual game (clear interval, return to start overlay)
+    const stopManual = useCallback(() => {
+        if (manualIntervalRef.current) {
+            clearInterval(manualIntervalRef.current)
+            manualIntervalRef.current = null
+        }
+        gameRef.current = new Game(width, height)
+        actionRef.current = 1
+        syncState()
+        setOverlayState('start')
+    }, [width, height, syncState])
+
     // Called by Overlay when user presses any key on the start/gameover screen
     const dismissOverlay = useCallback(() => {
         startManualGame()
@@ -183,8 +196,9 @@ export default function useGame(config) {
 
                     if (speedRef.current === SLOW_DELAY) {
                         await new Promise(r => setTimeout(r, SLOW_DELAY))
-                    } else {
-                        await Promise.resolve()
+                    } else if (stepCount % FAST_BATCH === 0) {
+                        // Yield a macrotask so the browser can paint and process events
+                        await new Promise(r => setTimeout(r, 0))
                     }
                 }
 
@@ -260,6 +274,7 @@ export default function useGame(config) {
         isFast,
         // manual mode
         dismissOverlay,
+        stopManual,
         // AI mode
         startAI,
         pauseAI,
