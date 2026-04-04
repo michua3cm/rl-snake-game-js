@@ -33,7 +33,7 @@ export default function Settings({ config, disabled, onChange }) {
                         min={5} max={100}
                         disabled={disabled}
                         className="input input-bordered input-sm w-20 text-center"
-                        onChange={e => handleChange('width', 5, 100, e)}
+                        onBlur={e => handleChange('width', 5, 100, e)}
                         onKeyDown={handleKeyDown}
                     />
                 </label>
@@ -46,7 +46,7 @@ export default function Settings({ config, disabled, onChange }) {
                         min={5} max={100}
                         disabled={disabled}
                         className="input input-bordered input-sm w-20 text-center"
-                        onChange={e => handleChange('height', 5, 100, e)}
+                        onBlur={e => handleChange('height', 5, 100, e)}
                         onKeyDown={handleKeyDown}
                     />
                 </label>
@@ -59,7 +59,7 @@ export default function Settings({ config, disabled, onChange }) {
                         min={5} max={50}
                         disabled={disabled}
                         className="input input-bordered input-sm w-20 text-center"
-                        onChange={e => handleChange('cellSize', 5, 50, e)}
+                        onBlur={e => handleChange('cellSize', 5, 50, e)}
                         onKeyDown={handleKeyDown}
                     />
                 </label>

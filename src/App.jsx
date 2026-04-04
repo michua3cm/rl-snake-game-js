@@ -16,6 +16,7 @@ export default function App() {
         trainingStatus,
         isFast,
         dismissOverlay,
+        stopManual,
         startAI,
         pauseAI,
         resumeAI,
@@ -30,8 +31,15 @@ export default function App() {
     const inputsDisabled = isAI ? isActive : overlayState === 'hidden'
 
     const handleModeChange = useCallback((newMode) => {
+        if (newMode === 'manual') {
+            // Switching to human play: stop any running AI and reset to start screen
+            stopAI()
+        } else {
+            // Switching to AI: stop any running manual game
+            stopManual()
+        }
         setMode(newMode)
-    }, [])
+    }, [stopAI, stopManual])
 
     const handleSizeChange = useCallback((field, value) => {
         setConfig(prev => ({ ...prev, [field]: value }))

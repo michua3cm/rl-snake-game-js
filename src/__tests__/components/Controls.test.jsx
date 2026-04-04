@@ -16,41 +16,40 @@ const defaultProps = {
 
 function renderControls(overrides = {}) {
     const props = { ...defaultProps, ...overrides }
-    // Reset all mocks
     Object.values(props).forEach(v => typeof v === 'function' && v.mockReset?.())
     return render(<Controls {...props} />)
 }
 
-describe('Controls — mode toggle', () => {
-    it('renders Manual and AI labels', () => {
+describe('Controls — mode segmented control', () => {
+    it('renders Manual and AI buttons', () => {
         renderControls()
         expect(screen.getByText('Manual')).toBeTruthy()
         expect(screen.getByText('AI')).toBeTruthy()
     })
 
-    it('checkbox is unchecked in manual mode', () => {
+    it('Manual button has primary style in manual mode', () => {
         renderControls({ mode: 'manual' })
-        const checkbox = document.getElementById('mode-toggle')
-        expect(checkbox.checked).toBe(false)
+        expect(document.getElementById('mode-btn-manual').className).toContain('btn-primary')
+        expect(document.getElementById('mode-btn-ai').className).toContain('btn-ghost')
     })
 
-    it('checkbox is checked in ai mode', () => {
+    it('AI button has primary style in ai mode', () => {
         renderControls({ mode: 'ai' })
-        const checkbox = document.getElementById('mode-toggle')
-        expect(checkbox.checked).toBe(true)
+        expect(document.getElementById('mode-btn-ai').className).toContain('btn-primary')
+        expect(document.getElementById('mode-btn-manual').className).toContain('btn-ghost')
     })
 
-    it('calls onModeChange("ai") when toggled on', () => {
+    it('calls onModeChange("ai") when AI button clicked', () => {
         const onModeChange = vi.fn()
         renderControls({ mode: 'manual', onModeChange })
-        fireEvent.click(document.getElementById('mode-toggle'))
+        fireEvent.click(document.getElementById('mode-btn-ai'))
         expect(onModeChange).toHaveBeenCalledWith('ai')
     })
 
-    it('calls onModeChange("manual") when toggled off', () => {
+    it('calls onModeChange("manual") when Manual button clicked', () => {
         const onModeChange = vi.fn()
         renderControls({ mode: 'ai', onModeChange })
-        fireEvent.click(document.getElementById('mode-toggle'))
+        fireEvent.click(document.getElementById('mode-btn-manual'))
         expect(onModeChange).toHaveBeenCalledWith('manual')
     })
 })

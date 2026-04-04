@@ -47,24 +47,32 @@ describe('Settings rendering', () => {
     })
 })
 
-describe('Settings.handleChange — valid input', () => {
+describe('Settings.handleChange — valid input (fires on blur)', () => {
     it('calls onChange with correct field and value for width', () => {
         const { container, onChange } = renderSettings()
         const input = container.querySelector('#input-width')
-        fireEvent.change(input, { target: { value: '15' } })
+        fireEvent.blur(input, { target: { value: '15' } })
         expect(onChange).toHaveBeenCalledWith('width', 15)
     })
 
     it('calls onChange with correct field and value for height', () => {
         const { container, onChange } = renderSettings()
-        fireEvent.change(container.querySelector('#input-height'), { target: { value: '20' } })
+        fireEvent.blur(container.querySelector('#input-height'), { target: { value: '20' } })
         expect(onChange).toHaveBeenCalledWith('height', 20)
     })
 
     it('calls onChange for cellSize', () => {
         const { container, onChange } = renderSettings()
-        fireEvent.change(container.querySelector('#input-cell'), { target: { value: '30' } })
+        fireEvent.blur(container.querySelector('#input-cell'), { target: { value: '30' } })
         expect(onChange).toHaveBeenCalledWith('cellSize', 30)
+    })
+
+    it('does NOT call onChange while typing mid-value (no blur yet)', () => {
+        const { container, onChange } = renderSettings()
+        // Simulate typing "1" — previously this would snap back because 1 < 5
+        // Now nothing fires until blur
+        fireEvent.change(container.querySelector('#input-width'), { target: { value: '1' } })
+        expect(onChange).not.toHaveBeenCalled()
     })
 })
 
@@ -72,29 +80,29 @@ describe('Settings.handleChange — invalid input', () => {
     it('does not call onChange when value is NaN', () => {
         const { container, onChange } = renderSettings()
         const input = container.querySelector('#input-width')
-        fireEvent.change(input, { target: { value: 'abc' } })
+        fireEvent.blur(input, { target: { value: 'abc' } })
         expect(onChange).not.toHaveBeenCalled()
     })
 
     it('does not call onChange when value is below minimum', () => {
         const { container, onChange } = renderSettings()
-        fireEvent.change(container.querySelector('#input-width'), { target: { value: '2' } })
+        fireEvent.blur(container.querySelector('#input-width'), { target: { value: '2' } })
         expect(onChange).not.toHaveBeenCalled()
     })
 
     it('does not call onChange when value exceeds maximum', () => {
         const { container, onChange } = renderSettings()
-        fireEvent.change(container.querySelector('#input-width'), { target: { value: '200' } })
+        fireEvent.blur(container.querySelector('#input-width'), { target: { value: '200' } })
         expect(onChange).not.toHaveBeenCalled()
     })
 
     it('reverts input to last valid value when invalid', () => {
         const { container } = renderSettings()
         const input = container.querySelector('#input-width')
-        // First a valid commit
-        fireEvent.change(input, { target: { value: '20' } })
-        // Then an invalid one
-        fireEvent.change(input, { target: { value: 'xyz' } })
+        input.value = '20'
+        fireEvent.blur(input)           // valid commit — lastValid becomes 20
+        input.value = '2'              // below min — invalid
+        fireEvent.blur(input)           // should revert to 20
         expect(input.value).toBe('20')
     })
 })
