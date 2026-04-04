@@ -18,6 +18,7 @@ export default function Board({ width, height, cellSize, snake, food }) {
     return (
         <div
             id="board"
+            className="rounded shadow-2xl ring-1 ring-white/10"
             style={{
                 display: 'grid',
                 gridTemplateColumns: `repeat(${width}, ${cellSize}px)`,
