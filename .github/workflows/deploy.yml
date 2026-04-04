@@ -3,6 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [dev]
+  workflow_dispatch:
 
 # Allow one concurrent deployment, cancel in-progress if a new push arrives
 concurrency:
