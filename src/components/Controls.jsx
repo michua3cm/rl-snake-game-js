@@ -24,16 +24,21 @@ export default function Controls({ mode, trainingStatus, isFast, onModeChange, o
     return (
         <div id="mode-toggle-wrapper" className="card bg-base-200 shadow-lg min-w-40">
             <div className="card-body flex flex-col gap-4 p-4">
-                <div className="flex items-center gap-3">
-                    <span className="text-sm text-base-content/70">Manual</span>
-                    <input
-                        type="checkbox"
-                        id="mode-toggle"
-                        className="toggle toggle-primary"
-                        checked={isAI}
-                        onChange={e => onModeChange(e.target.checked ? 'ai' : 'manual')}
-                    />
-                    <span className="text-sm text-base-content/70">AI</span>
+                <div className="join w-full">
+                    <button
+                        id="mode-btn-manual"
+                        className={`join-item btn btn-sm flex-1 ${!isAI ? 'btn-primary' : 'btn-ghost opacity-50'}`}
+                        onClick={() => onModeChange('manual')}
+                    >
+                        Manual
+                    </button>
+                    <button
+                        id="mode-btn-ai"
+                        className={`join-item btn btn-sm flex-1 ${isAI ? 'btn-primary' : 'btn-ghost opacity-50'}`}
+                        onClick={() => onModeChange('ai')}
+                    >
+                        AI
+                    </button>
                 </div>
 
                 {isAI && (
@@ -68,7 +73,7 @@ export default function Controls({ mode, trainingStatus, isFast, onModeChange, o
                         </button>
 
                         {!isActive && (
-                            <span id="start-hint" className="text-xs text-base-content/40 w-full mt-1">← Click to begin training</span>
+                            <span id="start-hint" className="text-xs text-base-content/40 w-full mt-1">↑ Click to begin training</span>
                         )}
                     </div>
                 )}
