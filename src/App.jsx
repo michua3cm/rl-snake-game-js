@@ -41,6 +41,8 @@ export default function App() {
     const isAI = mode === 'ai'
     const isActive = trainingStatus === 'running' || trainingStatus === 'paused'
     const inputsDisabled = isAI ? isActive : overlayState === 'hidden'
+    // Lock the mode toggle whenever a game is in progress (AI training or manual play/pause)
+    const modeLocked = isActive || (!isAI && overlayState === 'hidden')
 
     const handleModeChange = useCallback((newMode) => {
         if (newMode === 'manual') {
@@ -112,6 +114,7 @@ export default function App() {
                     trainingStatus={trainingStatus}
                     isFast={isFast}
                     manualPaused={manualPaused}
+                    modeLocked={modeLocked}
                     onModeChange={handleModeChange}
                     onStart={startAI}
                     onPause={pauseAI}

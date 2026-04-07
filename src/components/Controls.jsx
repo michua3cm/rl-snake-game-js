@@ -1,4 +1,4 @@
-export default function Controls({ mode, trainingStatus, isFast, manualPaused, onModeChange, onStart, onPause, onResume, onStop, onSpeedToggle }) {
+export default function Controls({ mode, trainingStatus, isFast, manualPaused, modeLocked, onModeChange, onStart, onPause, onResume, onStop, onSpeedToggle }) {
     const isAI = mode === 'ai'
     const isRunning = trainingStatus === 'running'
     const isPaused = trainingStatus === 'paused'
@@ -41,7 +41,7 @@ export default function Controls({ mode, trainingStatus, isFast, manualPaused, o
                     <button
                         id="mode-btn-manual"
                         className={`join-item btn btn-sm flex-1 ${!isAI ? 'btn-primary' : 'btn-ghost opacity-50'}`}
-                        disabled={isActive}
+                        disabled={modeLocked}
                         onClick={() => onModeChange('manual')}
                     >
                         Manual
@@ -49,7 +49,7 @@ export default function Controls({ mode, trainingStatus, isFast, manualPaused, o
                     <button
                         id="mode-btn-ai"
                         className={`join-item btn btn-sm flex-1 ${isAI ? 'btn-primary' : 'btn-ghost opacity-50'}`}
-                        disabled={isActive}
+                        disabled={modeLocked}
                         onClick={() => onModeChange('ai')}
                     >
                         AI
