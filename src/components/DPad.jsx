@@ -1,10 +1,11 @@
-export default function DPad({ onDirection, paused }) {
-    function btn(dirKey, icon, extraClass = '') {
+export default function DPad({ onDirection, onDismiss, paused }) {
+    function btn(dirKey, icon) {
         return (
             <button
-                className={`btn btn-neutral btn-sm w-12 h-12 p-0 ${extraClass}`}
+                className="btn btn-neutral btn-sm w-12 h-12 p-0"
                 onPointerDown={e => {
-                    e.preventDefault()   // prevent focus steal from game
+                    e.preventDefault()      // prevent focus steal from game
+                    if (onDismiss) onDismiss()  // start game if overlay is active
                     onDirection(dirKey)
                 }}
             >

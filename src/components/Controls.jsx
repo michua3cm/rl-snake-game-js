@@ -79,7 +79,7 @@ export default function Controls({ mode, trainingStatus, isFast, manualPaused, o
 
                 {/* Keyboard hints — desktop only, manual mode only */}
                 {!isAI && (
-                    <div className="hidden md:flex flex-col gap-1 text-xs text-base-content/50 border-t border-base-300 pt-3 mt-1">
+                    <div className="flex flex-col gap-1 text-xs text-base-content/50 border-t border-base-300 pt-3 mt-1">
                         <div className="font-semibold text-base-content/70 mb-1">Controls</div>
                         <div className="flex items-center gap-2">
                             <span className="kbd kbd-xs">↑</span>

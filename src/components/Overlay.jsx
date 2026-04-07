@@ -32,14 +32,18 @@ export default function Overlay({ state, score, onDismiss }) {
     if (state === 'hidden') return null
 
     return (
-        <div id="overlay" className="absolute inset-0 flex flex-col items-center justify-center bg-base-300/80 backdrop-blur-sm z-10 pointer-events-none">
+        <div
+            id="overlay"
+            className="absolute inset-0 flex flex-col items-center justify-center bg-base-300/80 backdrop-blur-sm z-10 cursor-pointer select-none"
+            onClick={onDismiss}
+        >
             <div id="overlay-title" className="text-lg sm:text-2xl md:text-4xl font-bold mb-2 text-base-content text-center px-2">
-                {state === 'start' ? 'Press any key to start' : 'Game Over'}
+                {state === 'start' ? 'Tap or press any key to start' : 'Game Over'}
             </div>
             {state === 'gameover' && (
                 <>
                     <div id="overlay-score" className="text-sm sm:text-lg md:text-xl text-base-content/70 mb-1">Score: {score}</div>
-                    <div id="overlay-instruction" className="text-xs sm:text-sm text-base-content/50">Press any key to reset</div>
+                    <div id="overlay-instruction" className="text-xs sm:text-sm text-base-content/50">Tap or press any key to reset</div>
                 </>
             )}
         </div>

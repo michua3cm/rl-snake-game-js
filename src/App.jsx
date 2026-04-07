@@ -57,7 +57,9 @@ export default function App() {
         if (!isAI) dismissOverlay()
     }, [isAI, dismissOverlay])
 
-    const showDPad = !isAI && overlayState === 'hidden'
+    // D-pad visible whenever in manual mode; passes onDismiss only while
+    // overlay is active so tapping an arrow also starts/restarts the game.
+    const dpadDismiss = (!isAI && overlayState !== 'hidden') ? handleDismissOverlay : null
 
     return (
         <div id="game-wrapper" className="min-h-screen bg-base-300 flex flex-col items-center justify-center py-6 px-4 gap-5">
@@ -91,9 +93,13 @@ export default function App() {
                         </div>
                     </div>
 
-                    {/* Mobile D-pad — shown only in manual mode while game is running */}
-                    {showDPad && (
-                        <DPad onDirection={handleDirection} paused={manualPaused} />
+                    {/* Mobile D-pad — always visible in manual mode */}
+                    {!isAI && (
+                        <DPad
+                            onDirection={handleDirection}
+                            onDismiss={dpadDismiss}
+                            paused={manualPaused}
+                        />
                     )}
                 </div>
 
