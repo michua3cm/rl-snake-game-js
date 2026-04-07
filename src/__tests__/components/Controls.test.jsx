@@ -6,6 +6,7 @@ const defaultProps = {
     mode: 'manual',
     trainingStatus: 'idle',
     isFast: false,
+    manualPaused: false,
     onModeChange: vi.fn(),
     onStart: vi.fn(),
     onPause: vi.fn(),
@@ -51,6 +52,24 @@ describe('Controls — mode segmented control', () => {
         renderControls({ mode: 'ai', onModeChange })
         fireEvent.click(document.getElementById('mode-btn-manual'))
         expect(onModeChange).toHaveBeenCalledWith('manual')
+    })
+
+    it('mode buttons are disabled when AI is active', () => {
+        renderControls({ mode: 'ai', trainingStatus: 'running' })
+        expect(document.getElementById('mode-btn-manual').disabled).toBe(true)
+        expect(document.getElementById('mode-btn-ai').disabled).toBe(true)
+    })
+
+    it('mode buttons are disabled when AI is paused', () => {
+        renderControls({ mode: 'ai', trainingStatus: 'paused' })
+        expect(document.getElementById('mode-btn-manual').disabled).toBe(true)
+        expect(document.getElementById('mode-btn-ai').disabled).toBe(true)
+    })
+
+    it('mode buttons are enabled when AI is idle', () => {
+        renderControls({ mode: 'ai', trainingStatus: 'idle' })
+        expect(document.getElementById('mode-btn-manual').disabled).toBe(false)
+        expect(document.getElementById('mode-btn-ai').disabled).toBe(false)
     })
 })
 

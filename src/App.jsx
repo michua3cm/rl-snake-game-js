@@ -7,6 +7,7 @@ import Overlay from './components/Overlay.jsx'
 import Controls from './components/Controls.jsx'
 import Settings from './components/Settings.jsx'
 import ThemeToggle from './components/ThemeToggle.jsx'
+import DPad from './components/DPad.jsx'
 
 export default function App() {
     const [mode, setMode] = useState('ai')   // 'manual' | 'ai'
@@ -22,8 +23,10 @@ export default function App() {
         overlayState,
         trainingStatus,
         isFast,
+        manualPaused,
         dismissOverlay,
         stopManual,
+        handleDirection,
         startAI,
         pauseAI,
         resumeAI,
@@ -53,6 +56,8 @@ export default function App() {
     const handleDismissOverlay = useCallback(() => {
         if (!isAI) dismissOverlay()
     }, [isAI, dismissOverlay])
+
+    const showDPad = !isAI && overlayState === 'hidden'
 
     return (
         <div id="game-wrapper" className="min-h-screen bg-base-300 flex flex-col items-center justify-center py-6 px-4 gap-5">
@@ -85,12 +90,18 @@ export default function App() {
                             />
                         </div>
                     </div>
+
+                    {/* Mobile D-pad — shown only in manual mode while game is running */}
+                    {showDPad && (
+                        <DPad onDirection={handleDirection} paused={manualPaused} />
+                    )}
                 </div>
 
                 <Controls
                     mode={mode}
                     trainingStatus={trainingStatus}
                     isFast={isFast}
+                    manualPaused={manualPaused}
                     onModeChange={handleModeChange}
                     onStart={startAI}
                     onPause={pauseAI}

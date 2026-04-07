@@ -6,8 +6,6 @@ export default function Overlay({ state, score, onDismiss }) {
     useEffect(() => {
         if (state !== 'start') return
 
-        // Use nextTick equivalent so we don't consume the same keypress that
-        // triggered a game-over restart transition to 'start'.
         const t = setTimeout(() => {
             addedRef.current = true
             document.addEventListener('keydown', handleKey)
@@ -35,13 +33,13 @@ export default function Overlay({ state, score, onDismiss }) {
 
     return (
         <div id="overlay" className="absolute inset-0 flex flex-col items-center justify-center bg-base-300/80 backdrop-blur-sm z-10 pointer-events-none">
-            <div id="overlay-title" className="text-4xl font-bold mb-3 text-base-content">
+            <div id="overlay-title" className="text-lg sm:text-2xl md:text-4xl font-bold mb-2 text-base-content text-center px-2">
                 {state === 'start' ? 'Press any key to start' : 'Game Over'}
             </div>
             {state === 'gameover' && (
                 <>
-                    <div id="overlay-score" className="text-xl text-base-content/70 mb-1">Score: {score}</div>
-                    <div id="overlay-instruction" className="text-sm text-base-content/50">Press any key to reset</div>
+                    <div id="overlay-score" className="text-sm sm:text-lg md:text-xl text-base-content/70 mb-1">Score: {score}</div>
+                    <div id="overlay-instruction" className="text-xs sm:text-sm text-base-content/50">Press any key to reset</div>
                 </>
             )}
         </div>

@@ -1,4 +1,4 @@
-export default function Controls({ mode, trainingStatus, isFast, onModeChange, onStart, onPause, onResume, onStop, onSpeedToggle }) {
+export default function Controls({ mode, trainingStatus, isFast, manualPaused, onModeChange, onStart, onPause, onResume, onStop, onSpeedToggle }) {
     const isAI = mode === 'ai'
     const isRunning = trainingStatus === 'running'
     const isPaused = trainingStatus === 'paused'
@@ -24,10 +24,12 @@ export default function Controls({ mode, trainingStatus, isFast, onModeChange, o
     return (
         <div id="mode-toggle-wrapper" className="card bg-base-200 shadow-lg min-w-40">
             <div className="card-body flex flex-col gap-4 p-4">
+                {/* Mode toggle — locked while AI is active */}
                 <div className="join w-full">
                     <button
                         id="mode-btn-manual"
                         className={`join-item btn btn-sm flex-1 ${!isAI ? 'btn-primary' : 'btn-ghost opacity-50'}`}
+                        disabled={isActive}
                         onClick={() => onModeChange('manual')}
                     >
                         Manual
@@ -35,6 +37,7 @@ export default function Controls({ mode, trainingStatus, isFast, onModeChange, o
                     <button
                         id="mode-btn-ai"
                         className={`join-item btn btn-sm flex-1 ${isAI ? 'btn-primary' : 'btn-ghost opacity-50'}`}
+                        disabled={isActive}
                         onClick={() => onModeChange('ai')}
                     >
                         AI
@@ -71,7 +74,24 @@ export default function Controls({ mode, trainingStatus, isFast, onModeChange, o
                         >
                             <span className="material-icons text-base">{speedIcon}</span>
                         </button>
+                    </div>
+                )}
 
+                {/* Keyboard hints — desktop only, manual mode only */}
+                {!isAI && (
+                    <div className="hidden md:flex flex-col gap-1 text-xs text-base-content/50 border-t border-base-300 pt-3 mt-1">
+                        <div className="font-semibold text-base-content/70 mb-1">Controls</div>
+                        <div className="flex items-center gap-2">
+                            <span className="kbd kbd-xs">↑</span>
+                            <span className="kbd kbd-xs">↓</span>
+                            <span className="kbd kbd-xs">←</span>
+                            <span className="kbd kbd-xs">→</span>
+                            <span>Move</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="kbd kbd-xs">Space</span>
+                            <span>{manualPaused ? 'Resume' : 'Pause'}</span>
+                        </div>
                     </div>
                 )}
             </div>
