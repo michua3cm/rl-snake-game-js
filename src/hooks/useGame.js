@@ -112,7 +112,7 @@ export default function useGame(config) {
 
             if (e.key in KEY_DIR_MAP) {
                 // While paused mid-game, a directional key also resumes
-                if (manualPausedRef.current && manualIntervalRef.current) {
+                if (manualPausedRef.current) {
                     manualPausedRef.current = false
                     setManualPaused(false)
                 }
