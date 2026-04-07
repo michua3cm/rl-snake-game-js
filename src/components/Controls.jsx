@@ -72,9 +72,6 @@ export default function Controls({ mode, trainingStatus, isFast, onModeChange, o
                             <span className="material-icons text-base">{speedIcon}</span>
                         </button>
 
-                        {!isActive && (
-                            <span id="start-hint" className="text-xs text-base-content/40 w-full mt-1">↑ Click to begin training</span>
-                        )}
                     </div>
                 )}
             </div>

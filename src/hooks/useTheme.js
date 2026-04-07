@@ -15,6 +15,10 @@ function applyTheme(pref) {
     document.documentElement.setAttribute('data-theme', theme)
 }
 
+// Apply immediately on module load so there is no flash of unstyled content
+// before the first React render.
+applyTheme(localStorage.getItem(STORAGE_KEY) ?? 'system')
+
 export default function useTheme() {
     const [pref, setPrefState] = useState(() => {
         return localStorage.getItem(STORAGE_KEY) ?? 'system'

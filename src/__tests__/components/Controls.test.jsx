@@ -71,11 +71,6 @@ describe('Controls — AI mode idle', () => {
         expect(document.getElementById('speed')).toBeTruthy()
     })
 
-    it('shows hint text when not active', () => {
-        renderControls({ mode: 'ai', trainingStatus: 'idle' })
-        expect(screen.getByText(/Click to begin training/i)).toBeTruthy()
-    })
-
     it('stop and speed buttons are disabled when idle', () => {
         renderControls({ mode: 'ai', trainingStatus: 'idle' })
         expect(document.getElementById('stop-training').disabled).toBe(true)

@@ -10,7 +10,11 @@ import ThemeToggle from './components/ThemeToggle.jsx'
 
 export default function App() {
     const [mode, setMode] = useState('ai')   // 'manual' | 'ai'
-    const [config, setConfig] = useState({ width: 40, height: 20, cellSize: 20 })
+    const [config, setConfig] = useState(() => {
+        const vw = window.innerWidth
+        const cellSize = vw < 768 ? Math.max(5, Math.floor((vw - 32) / 40)) : 20
+        return { width: 40, height: 20, cellSize }
+    })
     const [themePref, setThemePref] = useTheme()
 
     const {
