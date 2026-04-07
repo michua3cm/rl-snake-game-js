@@ -30,10 +30,10 @@ export default function Settings({ config, disabled, onChange }) {
                         type="number"
                         id="input-width"
                         defaultValue={config.width}
-                        min={5} max={100}
+                        min={4} max={100}
                         disabled={disabled}
                         className="input input-bordered input-sm w-20 text-center"
-                        onBlur={e => handleChange('width', 5, 100, e)}
+                        onBlur={e => handleChange('width', 4, 100, e)}
                         onKeyDown={handleKeyDown}
                     />
                 </label>
@@ -43,10 +43,10 @@ export default function Settings({ config, disabled, onChange }) {
                         type="number"
                         id="input-height"
                         defaultValue={config.height}
-                        min={5} max={100}
+                        min={4} max={100}
                         disabled={disabled}
                         className="input input-bordered input-sm w-20 text-center"
-                        onBlur={e => handleChange('height', 5, 100, e)}
+                        onBlur={e => handleChange('height', 4, 100, e)}
                         onKeyDown={handleKeyDown}
                     />
                 </label>

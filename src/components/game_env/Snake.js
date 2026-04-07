@@ -14,25 +14,31 @@ export default class Snake {
      * @param {number} width - Board width (in cells).
      * @param {number} height - Board height (in cells).
      * @param {number} initialDirection - Initial orientation of the snake head
+     * @param {number|null} [spawnX=null] - Explicit spawn x coordinate (defaults to centre)
+     * @param {number|null} [spawnY=null] - Explicit spawn y coordinate (defaults to centre)
      */
-    constructor(width, height, initialDirection) {
+    constructor(width, height, initialDirection, spawnX = null, spawnY = null) {
         this.width = width;
         this.height = height;
         this.direction = initialDirection;
 
         this.snake = [];
 
-        this._init();
+        this._init(spawnX, spawnY);
     }
 
     /**
-     * Places the initial head of the snake at the center of the board.
+     * Places the initial head of the snake at the given position,
+     * falling back to the board centre when no coordinates are provided.
+     *
+     * @param {number|null} x
+     * @param {number|null} y
      * @private
      */
-    _init() {
-        const x = Math.floor(this.width / 2);
-        const y = Math.floor(this.height / 2);
-        this.snake.push({ x, y });
+    _init(x, y) {
+        const spawnX = x !== null && x !== undefined ? x : Math.floor(this.width / 2);
+        const spawnY = y !== null && y !== undefined ? y : Math.floor(this.height / 2);
+        this.snake.push({ x: spawnX, y: spawnY });
     }
 
     /**
@@ -76,4 +82,3 @@ export default class Snake {
         return this.snake[0];
     }
 }
-

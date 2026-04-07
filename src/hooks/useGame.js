@@ -42,11 +42,15 @@ export default function useGame(config) {
     const speedRef = useRef(SLOW_DELAY)
     const resumeResolveRef = useRef(null)
 
+    // Manual mode pause flag
+    const manualPausedRef = useRef(false)
+
     // Reactive state for rendering
     const [renderState, setRenderState] = useState({ snake: [], food: null, score: 0, highScore: 0, episode: 1 })
     const [overlayState, setOverlayState] = useState('start')   // 'start' | 'gameover' | 'hidden'
     const [trainingStatus, setTrainingStatus] = useState('idle') // 'idle' | 'running' | 'paused'
     const [isFast, setIsFast] = useState(false)
+    const [manualPaused, setManualPaused] = useState(false)
 
     // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -71,34 +75,57 @@ export default function useGame(config) {
         gameRef.current = new Game(width, height)
         agentRef.current = new QLearningAgent()
         actionRef.current = 1
+        manualPausedRef.current = false
         setOverlayState('start')
         setTrainingStatus('idle')
         setIsFast(false)
+        setManualPaused(false)
         speedRef.current = SLOW_DELAY
         syncState(1)
-        // Don't reset cancelledRef here — the old async loop reads it; the
-        // new one will set it false when it starts.
     }, [width, height, cellSize]) // eslint-disable-line react-hooks/exhaustive-deps
 
-    // ── Arrow-key listener (manual mode only) ─────────────────────────────────
+    // ── Direction handler (shared by keyboard and D-pad) ──────────────────────
+
+    const handleDirection = useCallback((dirKey) => {
+        const game = gameRef.current
+        if (!game) return
+        const currDir = game.getDirection()
+        actionRef.current = Game.getRelativeAction(currDir, KEY_DIR_MAP[dirKey])
+    }, [])
+
+    // ── Manual pause toggle (shared by space bar and D-pad pause button) ──────
+
+    const toggleManualPause = useCallback(() => {
+        if (!manualIntervalRef.current) return
+        manualPausedRef.current = !manualPausedRef.current
+        setManualPaused(manualPausedRef.current)
+    }, [])
+
+    // ── Arrow-key + space listener (manual mode only) ─────────────────────────
 
     useEffect(() => {
         function handleKey(e) {
             const ignored = ['Tab', 'Alt', 'Meta', 'Control', 'Shift']
             if (ignored.includes(e.key)) return
-            // Prevent page scroll with arrow keys while playing
             if (e.key.startsWith('Arrow')) e.preventDefault()
+            if (e.key === ' ') e.preventDefault()
 
             if (e.key in KEY_DIR_MAP) {
-                const game = gameRef.current
-                if (!game) return
-                const currDir = game.getDirection()
-                actionRef.current = Game.getRelativeAction(currDir, KEY_DIR_MAP[e.key])
+                // While paused mid-game, a directional key also resumes
+                if (manualPausedRef.current) {
+                    manualPausedRef.current = false
+                    setManualPaused(false)
+                }
+                handleDirection(e.key)
+                return
             }
+
+            // Space bar — toggle manual pause when game is running
+            if (e.key === ' ') toggleManualPause()
         }
         window.addEventListener('keydown', handleKey)
         return () => window.removeEventListener('keydown', handleKey)
-    }, [])
+    }, [handleDirection, toggleManualPause])
 
     // ── Manual game loop ───────────────────────────────────────────────────────
 
@@ -106,6 +133,8 @@ export default function useGame(config) {
         setOverlayState('hidden')
 
         const id = setInterval(() => {
+            if (manualPausedRef.current) return   // paused — skip tick
+
             const game = gameRef.current
             if (!game) return
             game.step(actionRef.current)
@@ -119,6 +148,8 @@ export default function useGame(config) {
                 highScoreRef.current = Math.max(highScoreRef.current, score)
                 syncState()
                 setOverlayState('gameover')
+                manualPausedRef.current = false
+                setManualPaused(false)
                 return
             }
             syncState()
@@ -135,6 +166,8 @@ export default function useGame(config) {
         if (manualIntervalRef.current) clearInterval(manualIntervalRef.current)
         gameRef.current = new Game(width, height)
         actionRef.current = 1
+        manualPausedRef.current = false
+        setManualPaused(false)
         syncState()
         manualIntervalRef.current = startManual()
     }, [width, height, syncState, startManual])
@@ -147,6 +180,8 @@ export default function useGame(config) {
         }
         gameRef.current = new Game(width, height)
         actionRef.current = 1
+        manualPausedRef.current = false
+        setManualPaused(false)
         syncState()
         setOverlayState('start')
     }, [width, height, syncState])
@@ -188,8 +223,6 @@ export default function useGame(config) {
                     const score = gameRef.current.getScore()
                     if (score > highScoreRef.current) highScoreRef.current = score
 
-                    // Throttle renders: always update in slow mode; in fast mode
-                    // only update every 200 steps to keep the UI responsive.
                     if (speedRef.current === SLOW_DELAY || stepCount % 200 === 0) {
                         syncState(episodeRef.current + 1)
                     }
@@ -197,7 +230,6 @@ export default function useGame(config) {
                     if (speedRef.current === SLOW_DELAY) {
                         await new Promise(r => setTimeout(r, SLOW_DELAY))
                     } else if (stepCount % FAST_BATCH === 0) {
-                        // Yield a macrotask so the browser can paint and process events
                         await new Promise(r => setTimeout(r, 0))
                     }
                 }
@@ -244,7 +276,6 @@ export default function useGame(config) {
         }
         setTrainingStatus('idle')
         setOverlayState('start')
-        // Reset for next run
         gameRef.current = new Game(width, height)
         agentRef.current = new QLearningAgent()
         episodeRef.current = 1
@@ -272,9 +303,13 @@ export default function useGame(config) {
         overlayState,
         trainingStatus,
         isFast,
+        manualPaused,
         // manual mode
         dismissOverlay,
         stopManual,
+        restartManual: stopManual,
+        handleDirection,
+        toggleManualPause,
         // AI mode
         startAI,
         pauseAI,

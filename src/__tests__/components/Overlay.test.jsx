@@ -13,9 +13,9 @@ describe('Overlay — hidden state', () => {
 })
 
 describe('Overlay — start state', () => {
-    it('shows "Press any key to start"', () => {
+    it('shows start prompt', () => {
         render(<Overlay state="start" score={0} onDismiss={vi.fn()} />)
-        expect(screen.getByText('Press any key to start')).toBeTruthy()
+        expect(screen.getByText('Tap or press any key to start')).toBeTruthy()
     })
 
     it('does not show score or reset instruction', () => {
@@ -71,7 +71,7 @@ describe('Overlay — gameover state', () => {
 
     it('shows reset instruction', () => {
         render(<Overlay state="gameover" score={0} onDismiss={vi.fn()} />)
-        expect(screen.getByText('Press any key to reset')).toBeTruthy()
+        expect(screen.getByText('Tap or press any key to reset')).toBeTruthy()
     })
 
     it('does not call onDismiss on keypress (gameover uses parent handler)', async () => {

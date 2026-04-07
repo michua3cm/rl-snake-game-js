@@ -7,10 +7,15 @@ import Overlay from './components/Overlay.jsx'
 import Controls from './components/Controls.jsx'
 import Settings from './components/Settings.jsx'
 import ThemeToggle from './components/ThemeToggle.jsx'
+import DPad from './components/DPad.jsx'
 
 export default function App() {
     const [mode, setMode] = useState('ai')   // 'manual' | 'ai'
-    const [config, setConfig] = useState({ width: 40, height: 20, cellSize: 20 })
+    const [config, setConfig] = useState(() => {
+        const vw = window.innerWidth
+        const cellSize = vw < 768 ? Math.max(5, Math.floor((vw - 32) / 40)) : 20
+        return { width: 40, height: 20, cellSize }
+    })
     const [themePref, setThemePref] = useTheme()
 
     const {
@@ -18,8 +23,12 @@ export default function App() {
         overlayState,
         trainingStatus,
         isFast,
+        manualPaused,
         dismissOverlay,
         stopManual,
+        restartManual,
+        handleDirection,
+        toggleManualPause,
         startAI,
         pauseAI,
         resumeAI,
@@ -32,6 +41,8 @@ export default function App() {
     const isAI = mode === 'ai'
     const isActive = trainingStatus === 'running' || trainingStatus === 'paused'
     const inputsDisabled = isAI ? isActive : overlayState === 'hidden'
+    // Lock the mode toggle whenever a game is in progress (AI training or manual play/pause)
+    const modeLocked = isActive || (!isAI && overlayState === 'hidden')
 
     const handleModeChange = useCallback((newMode) => {
         if (newMode === 'manual') {
@@ -49,6 +60,10 @@ export default function App() {
     const handleDismissOverlay = useCallback(() => {
         if (!isAI) dismissOverlay()
     }, [isAI, dismissOverlay])
+
+    // D-pad visible whenever in manual mode; passes onDismiss only while
+    // overlay is active so tapping an arrow also starts/restarts the game.
+    const dpadDismiss = (!isAI && overlayState !== 'hidden') ? handleDismissOverlay : null
 
     return (
         <div id="game-wrapper" className="min-h-screen bg-base-300 flex flex-col items-center justify-center py-6 px-4 gap-5">
@@ -81,12 +96,25 @@ export default function App() {
                             />
                         </div>
                     </div>
+
+                    {/* Mobile D-pad — always visible in manual mode */}
+                    {!isAI && (
+                        <DPad
+                            onDirection={handleDirection}
+                            onDismiss={dpadDismiss}
+                            onPause={overlayState === 'hidden' ? toggleManualPause : null}
+                            onRestart={overlayState === 'hidden' ? restartManual : null}
+                            paused={manualPaused}
+                        />
+                    )}
                 </div>
 
                 <Controls
                     mode={mode}
                     trainingStatus={trainingStatus}
                     isFast={isFast}
+                    manualPaused={manualPaused}
+                    modeLocked={modeLocked}
                     onModeChange={handleModeChange}
                     onStart={startAI}
                     onPause={pauseAI}

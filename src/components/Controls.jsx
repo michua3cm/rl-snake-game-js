@@ -1,4 +1,4 @@
-export default function Controls({ mode, trainingStatus, isFast, onModeChange, onStart, onPause, onResume, onStop, onSpeedToggle }) {
+export default function Controls({ mode, trainingStatus, isFast, manualPaused, modeLocked, onModeChange, onStart, onPause, onResume, onStop, onSpeedToggle }) {
     const isAI = mode === 'ai'
     const isRunning = trainingStatus === 'running'
     const isPaused = trainingStatus === 'paused'
@@ -21,13 +21,27 @@ export default function Controls({ mode, trainingStatus, isFast, onModeChange, o
         ? 'btn btn-secondary btn-sm gap-1'
         : 'btn btn-info btn-sm gap-1'
 
+    // AI hints — context-aware rows of [icon, description]
+    const aiHints = isAI ? (() => {
+        if (!isActive) return [
+            ['play_arrow', 'Start training'],
+        ]
+        const rows = []
+        rows.push([startIcon, isRunning ? 'Pause' : 'Resume'])
+        rows.push(['stop', 'Stop training'])
+        rows.push([speedIcon, isFast ? 'Slow down' : 'Speed up'])
+        return rows
+    })() : []
+
     return (
         <div id="mode-toggle-wrapper" className="card bg-base-200 shadow-lg min-w-40">
             <div className="card-body flex flex-col gap-4 p-4">
+                {/* Mode toggle — locked while AI is active */}
                 <div className="join w-full">
                     <button
                         id="mode-btn-manual"
                         className={`join-item btn btn-sm flex-1 ${!isAI ? 'btn-primary' : 'btn-ghost opacity-50'}`}
+                        disabled={modeLocked}
                         onClick={() => onModeChange('manual')}
                     >
                         Manual
@@ -35,6 +49,7 @@ export default function Controls({ mode, trainingStatus, isFast, onModeChange, o
                     <button
                         id="mode-btn-ai"
                         className={`join-item btn btn-sm flex-1 ${isAI ? 'btn-primary' : 'btn-ghost opacity-50'}`}
+                        disabled={modeLocked}
                         onClick={() => onModeChange('ai')}
                     >
                         AI
@@ -42,39 +57,65 @@ export default function Controls({ mode, trainingStatus, isFast, onModeChange, o
                 </div>
 
                 {isAI && (
-                    <div className="flex items-center gap-2 flex-wrap">
-                        <button
-                            id="stop-training"
-                            className={stopClass}
-                            disabled={!isActive}
-                            onClick={onStop}
-                            onKeyDown={e => { if ([' ', 'Enter'].includes(e.key)) { e.stopPropagation(); e.currentTarget.blur() } }}
-                        >
-                            <span className="material-icons text-base">stop</span>
-                        </button>
+                    <>
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <button
+                                id="stop-training"
+                                className={stopClass}
+                                disabled={!isActive}
+                                onClick={onStop}
+                                onKeyDown={e => { if ([' ', 'Enter'].includes(e.key)) { e.stopPropagation(); e.currentTarget.blur() } }}
+                            >
+                                <span className="material-icons text-base">stop</span>
+                            </button>
 
-                        <button
-                            id="start-training"
-                            className={startClass}
-                            onClick={handleStartClick}
-                            onKeyDown={e => { if ([' ', 'Enter'].includes(e.key)) { e.stopPropagation(); e.currentTarget.blur() } }}
-                        >
-                            <span className="material-icons text-base">{startIcon}</span>
-                        </button>
+                            <button
+                                id="start-training"
+                                className={startClass}
+                                onClick={handleStartClick}
+                                onKeyDown={e => { if ([' ', 'Enter'].includes(e.key)) { e.stopPropagation(); e.currentTarget.blur() } }}
+                            >
+                                <span className="material-icons text-base">{startIcon}</span>
+                            </button>
 
-                        <button
-                            id="speed"
-                            className={speedClass}
-                            disabled={!isActive}
-                            onClick={onSpeedToggle}
-                            onKeyDown={e => { if ([' ', 'Enter'].includes(e.key)) { e.stopPropagation(); e.currentTarget.blur() } }}
-                        >
-                            <span className="material-icons text-base">{speedIcon}</span>
-                        </button>
+                            <button
+                                id="speed"
+                                className={speedClass}
+                                disabled={!isActive}
+                                onClick={onSpeedToggle}
+                                onKeyDown={e => { if ([' ', 'Enter'].includes(e.key)) { e.stopPropagation(); e.currentTarget.blur() } }}
+                            >
+                                <span className="material-icons text-base">{speedIcon}</span>
+                            </button>
+                        </div>
 
-                        {!isActive && (
-                            <span id="start-hint" className="text-xs text-base-content/40 w-full mt-1">↑ Click to begin training</span>
-                        )}
+                        {/* AI button hints */}
+                        <div className="flex flex-col gap-1 text-xs text-base-content/50 border-t border-base-300 pt-3">
+                            {aiHints.map(([icon, label]) => (
+                                <div key={label} className="flex items-center gap-2">
+                                    <span className="material-icons text-sm text-base-content/60">{icon}</span>
+                                    <span>: {label}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                )}
+
+                {/* Keyboard hints — desktop only, manual mode only */}
+                {!isAI && (
+                    <div className="hidden md:flex flex-col gap-1 text-xs text-base-content/50 border-t border-base-300 pt-3 mt-1">
+                        <div className="font-semibold text-base-content/70 mb-1">Controls</div>
+                        <div className="flex items-center gap-2">
+                            <span className="kbd kbd-xs">↑</span>
+                            <span className="kbd kbd-xs">↓</span>
+                            <span className="kbd kbd-xs">←</span>
+                            <span className="kbd kbd-xs">→</span>
+                            <span>Move</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="kbd kbd-xs">Space</span>
+                            <span>{manualPaused ? 'Resume' : 'Pause'}</span>
+                        </div>
                     </div>
                 )}
             </div>
