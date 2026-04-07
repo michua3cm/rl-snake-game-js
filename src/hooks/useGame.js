@@ -302,6 +302,7 @@ export default function useGame(config) {
         // manual mode
         dismissOverlay,
         stopManual,
+        restartManual: startManualGame,
         handleDirection,
         toggleManualPause,
         // AI mode

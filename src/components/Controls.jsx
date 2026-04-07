@@ -21,6 +21,18 @@ export default function Controls({ mode, trainingStatus, isFast, manualPaused, o
         ? 'btn btn-secondary btn-sm gap-1'
         : 'btn btn-info btn-sm gap-1'
 
+    // AI hints — context-aware rows of [icon, description]
+    const aiHints = isAI ? (() => {
+        if (!isActive) return [
+            ['play_arrow', 'Start training'],
+        ]
+        const rows = []
+        rows.push([startIcon, isRunning ? 'Pause' : 'Resume'])
+        rows.push(['stop', 'Stop training'])
+        rows.push([speedIcon, isFast ? 'Slow down' : 'Speed up'])
+        return rows
+    })() : []
+
     return (
         <div id="mode-toggle-wrapper" className="card bg-base-200 shadow-lg min-w-40">
             <div className="card-body flex flex-col gap-4 p-4">
@@ -45,36 +57,48 @@ export default function Controls({ mode, trainingStatus, isFast, manualPaused, o
                 </div>
 
                 {isAI && (
-                    <div className="flex items-center gap-2 flex-wrap">
-                        <button
-                            id="stop-training"
-                            className={stopClass}
-                            disabled={!isActive}
-                            onClick={onStop}
-                            onKeyDown={e => { if ([' ', 'Enter'].includes(e.key)) { e.stopPropagation(); e.currentTarget.blur() } }}
-                        >
-                            <span className="material-icons text-base">stop</span>
-                        </button>
+                    <>
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <button
+                                id="stop-training"
+                                className={stopClass}
+                                disabled={!isActive}
+                                onClick={onStop}
+                                onKeyDown={e => { if ([' ', 'Enter'].includes(e.key)) { e.stopPropagation(); e.currentTarget.blur() } }}
+                            >
+                                <span className="material-icons text-base">stop</span>
+                            </button>
 
-                        <button
-                            id="start-training"
-                            className={startClass}
-                            onClick={handleStartClick}
-                            onKeyDown={e => { if ([' ', 'Enter'].includes(e.key)) { e.stopPropagation(); e.currentTarget.blur() } }}
-                        >
-                            <span className="material-icons text-base">{startIcon}</span>
-                        </button>
+                            <button
+                                id="start-training"
+                                className={startClass}
+                                onClick={handleStartClick}
+                                onKeyDown={e => { if ([' ', 'Enter'].includes(e.key)) { e.stopPropagation(); e.currentTarget.blur() } }}
+                            >
+                                <span className="material-icons text-base">{startIcon}</span>
+                            </button>
 
-                        <button
-                            id="speed"
-                            className={speedClass}
-                            disabled={!isActive}
-                            onClick={onSpeedToggle}
-                            onKeyDown={e => { if ([' ', 'Enter'].includes(e.key)) { e.stopPropagation(); e.currentTarget.blur() } }}
-                        >
-                            <span className="material-icons text-base">{speedIcon}</span>
-                        </button>
-                    </div>
+                            <button
+                                id="speed"
+                                className={speedClass}
+                                disabled={!isActive}
+                                onClick={onSpeedToggle}
+                                onKeyDown={e => { if ([' ', 'Enter'].includes(e.key)) { e.stopPropagation(); e.currentTarget.blur() } }}
+                            >
+                                <span className="material-icons text-base">{speedIcon}</span>
+                            </button>
+                        </div>
+
+                        {/* AI button hints */}
+                        <div className="flex flex-col gap-1 text-xs text-base-content/50 border-t border-base-300 pt-3">
+                            {aiHints.map(([icon, label]) => (
+                                <div key={label} className="flex items-center gap-2">
+                                    <span className="material-icons text-sm text-base-content/60">{icon}</span>
+                                    <span>: {label}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </>
                 )}
 
                 {/* Keyboard hints — desktop only, manual mode only */}

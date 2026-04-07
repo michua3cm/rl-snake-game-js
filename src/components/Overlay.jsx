@@ -34,7 +34,7 @@ export default function Overlay({ state, score, onDismiss }) {
     return (
         <div
             id="overlay"
-            className="absolute inset-0 flex flex-col items-center justify-center bg-base-300/80 backdrop-blur-sm z-10 cursor-pointer select-none"
+            className="absolute inset-0 flex flex-col items-center justify-center bg-base-300/50 backdrop-blur-sm z-10 cursor-pointer select-none"
             onClick={onDismiss}
         >
             <div id="overlay-title" className="text-lg sm:text-2xl md:text-4xl font-bold mb-2 text-base-content text-center px-2">

@@ -26,6 +26,7 @@ export default function App() {
         manualPaused,
         dismissOverlay,
         stopManual,
+        restartManual,
         handleDirection,
         toggleManualPause,
         startAI,
@@ -100,6 +101,7 @@ export default function App() {
                             onDirection={handleDirection}
                             onDismiss={dpadDismiss}
                             onPause={overlayState === 'hidden' ? toggleManualPause : null}
+                            onRestart={overlayState === 'hidden' ? restartManual : null}
                             paused={manualPaused}
                         />
                     )}
