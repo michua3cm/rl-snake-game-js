@@ -1,11 +1,11 @@
-export default function DPad({ onDirection, onDismiss, paused }) {
-    function btn(dirKey, icon) {
+export default function DPad({ onDirection, onDismiss, onPause, paused }) {
+    function dirBtn(dirKey, icon) {
         return (
             <button
                 className="btn btn-neutral btn-sm w-12 h-12 p-0"
                 onPointerDown={e => {
-                    e.preventDefault()      // prevent focus steal from game
-                    if (onDismiss) onDismiss()  // start game if overlay is active
+                    e.preventDefault()
+                    if (onDismiss) onDismiss()
                     onDirection(dirKey)
                 }}
             >
@@ -15,18 +15,27 @@ export default function DPad({ onDirection, onDismiss, paused }) {
     }
 
     return (
-        <div id="dpad" className="md:hidden flex flex-col items-center gap-1 mt-3">
-            {paused && (
-                <div className="text-xs text-base-content/50 mb-1">Paused — press Space to resume</div>
-            )}
+        <div id="dpad" className="md:hidden flex flex-col items-center gap-2 mt-3">
             <div className="grid grid-cols-3 gap-1">
                 <div />
-                {btn('ArrowUp', 'arrow_upward')}
+                {dirBtn('ArrowUp', 'arrow_upward')}
                 <div />
-                {btn('ArrowLeft', 'arrow_back')}
-                {btn('ArrowDown', 'arrow_downward')}
-                {btn('ArrowRight', 'arrow_forward')}
+                {dirBtn('ArrowLeft', 'arrow_back')}
+                {dirBtn('ArrowDown', 'arrow_downward')}
+                {dirBtn('ArrowRight', 'arrow_forward')}
             </div>
+
+            {/* Pause/resume button — only when game is actively running */}
+            {onPause && (
+                <button
+                    id="dpad-pause"
+                    className={`btn btn-sm gap-1 w-full max-w-36 ${paused ? 'btn-success' : 'btn-warning'}`}
+                    onPointerDown={e => { e.preventDefault(); onPause() }}
+                >
+                    <span className="material-icons text-base">{paused ? 'play_arrow' : 'pause'}</span>
+                    {paused ? 'Resume' : 'Pause'}
+                </button>
+            )}
         </div>
     )
 }

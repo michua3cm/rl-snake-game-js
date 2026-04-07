@@ -93,6 +93,14 @@ export default function useGame(config) {
         actionRef.current = Game.getRelativeAction(currDir, KEY_DIR_MAP[dirKey])
     }, [])
 
+    // ── Manual pause toggle (shared by space bar and D-pad pause button) ──────
+
+    const toggleManualPause = useCallback(() => {
+        if (!manualIntervalRef.current) return
+        manualPausedRef.current = !manualPausedRef.current
+        setManualPaused(manualPausedRef.current)
+    }, [])
+
     // ── Arrow-key + space listener (manual mode only) ─────────────────────────
 
     useEffect(() => {
@@ -108,14 +116,11 @@ export default function useGame(config) {
             }
 
             // Space bar — toggle manual pause when game is running
-            if (e.key === ' ' && manualIntervalRef.current) {
-                manualPausedRef.current = !manualPausedRef.current
-                setManualPaused(manualPausedRef.current)
-            }
+            if (e.key === ' ') toggleManualPause()
         }
         window.addEventListener('keydown', handleKey)
         return () => window.removeEventListener('keydown', handleKey)
-    }, [handleDirection])
+    }, [handleDirection, toggleManualPause])
 
     // ── Manual game loop ───────────────────────────────────────────────────────
 
@@ -298,6 +303,7 @@ export default function useGame(config) {
         dismissOverlay,
         stopManual,
         handleDirection,
+        toggleManualPause,
         // AI mode
         startAI,
         pauseAI,
