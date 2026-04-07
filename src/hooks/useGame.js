@@ -167,6 +167,18 @@ export default function useGame(config) {
         manualIntervalRef.current = startManual()
     }, [width, height, syncState, startManual])
 
+    // Restart mid-game: reset board but start in paused state so the player
+    // can see the fresh board before resuming.
+    const restartManualPaused = useCallback(() => {
+        if (manualIntervalRef.current) clearInterval(manualIntervalRef.current)
+        gameRef.current = new Game(width, height)
+        actionRef.current = 1
+        manualPausedRef.current = true
+        setManualPaused(true)
+        syncState()
+        manualIntervalRef.current = startManual()
+    }, [width, height, syncState, startManual])
+
     // Stop a running manual game (clear interval, return to start overlay)
     const stopManual = useCallback(() => {
         if (manualIntervalRef.current) {
@@ -302,7 +314,7 @@ export default function useGame(config) {
         // manual mode
         dismissOverlay,
         stopManual,
-        restartManual: startManualGame,
+        restartManual: restartManualPaused,
         handleDirection,
         toggleManualPause,
         // AI mode

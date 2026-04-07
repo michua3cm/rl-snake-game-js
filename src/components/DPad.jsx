@@ -31,7 +31,7 @@ export default function DPad({ onDirection, onDismiss, onPause, onRestart, pause
                 <div className="flex gap-2 w-full max-w-36 justify-center">
                     <button
                         id="dpad-restart"
-                        className="btn btn-neutral btn-sm flex-1"
+                        className="btn btn-accent btn-sm flex-1"
                         disabled={!paused}
                         onPointerDown={e => { e.preventDefault(); onRestart() }}
                     >
