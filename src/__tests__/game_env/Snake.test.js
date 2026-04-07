@@ -10,17 +10,22 @@ const DIRS = [
 ]
 
 describe('Snake initialisation', () => {
-    it('spawns with a single segment at the board centre', () => {
+    it('spawns at the board centre when no spawn coords given', () => {
         const snake = new Snake(10, 10, 2)
         const segs = snake.getSegments()
         expect(segs).toHaveLength(1)
         expect(segs[0]).toEqual({ x: 5, y: 5 })
     })
 
-    it('centres correctly on odd-dimension boards', () => {
+    it('centres correctly on odd-dimension boards when no spawn coords given', () => {
         const snake = new Snake(9, 7, 2)
         const head = snake.getHead()
         expect(head).toEqual({ x: 4, y: 3 })
+    })
+
+    it('spawns at an explicit position when coords are provided', () => {
+        const snake = new Snake(10, 10, 2, 3, 7)
+        expect(snake.getHead()).toEqual({ x: 3, y: 7 })
     })
 
     it('getHead returns the same object as segments[0]', () => {

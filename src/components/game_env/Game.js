@@ -64,13 +64,23 @@ export default class Game {
     }
 
     /**
-     * Resets the game to a new state.
+     * Resets the game to a new state with a randomly positioned snake.
+     * The spawn point is kept at least `border` cells away from each wall,
+     * where `border` adapts to small boards so a valid cell always exists.
      *
      * @returns {boolean[]} Initial state representation
      */
     reset() {
         const direction = Math.floor(Math.random() * Game.DIRECTIONS.length);
-        this.snake = new Snake(this.width, this.height, direction);
+
+        // Adaptive border: 2 cells for boards ≥ 6 in that dimension, 1 otherwise
+        const borderX = Math.min(2, Math.floor((this.width  - 1) / 2));
+        const borderY = Math.min(2, Math.floor((this.height - 1) / 2));
+
+        const spawnX = borderX + Math.floor(Math.random() * (this.width  - 2 * borderX));
+        const spawnY = borderY + Math.floor(Math.random() * (this.height - 2 * borderY));
+
+        this.snake = new Snake(this.width, this.height, direction, spawnX, spawnY);
         this.food = new Food(this.width, this.height, this.snake.getSegments());
 
         this.frame = 0;
