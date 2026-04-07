@@ -111,6 +111,11 @@ export default function useGame(config) {
             if (e.key === ' ') e.preventDefault()
 
             if (e.key in KEY_DIR_MAP) {
+                // While paused mid-game, a directional key also resumes
+                if (manualPausedRef.current && manualIntervalRef.current) {
+                    manualPausedRef.current = false
+                    setManualPaused(false)
+                }
                 handleDirection(e.key)
                 return
             }
@@ -163,18 +168,6 @@ export default function useGame(config) {
         actionRef.current = 1
         manualPausedRef.current = false
         setManualPaused(false)
-        syncState()
-        manualIntervalRef.current = startManual()
-    }, [width, height, syncState, startManual])
-
-    // Restart mid-game: reset board but start in paused state so the player
-    // can see the fresh board before resuming.
-    const restartManualPaused = useCallback(() => {
-        if (manualIntervalRef.current) clearInterval(manualIntervalRef.current)
-        gameRef.current = new Game(width, height)
-        actionRef.current = 1
-        manualPausedRef.current = true
-        setManualPaused(true)
         syncState()
         manualIntervalRef.current = startManual()
     }, [width, height, syncState, startManual])
@@ -314,7 +307,7 @@ export default function useGame(config) {
         // manual mode
         dismissOverlay,
         stopManual,
-        restartManual: restartManualPaused,
+        restartManual: stopManual,
         handleDirection,
         toggleManualPause,
         // AI mode
